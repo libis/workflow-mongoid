@@ -1,0 +1,21 @@
+# Mongoid Configuration for Travis CI
+# ===================================
+
+default:
+
+test:
+  options:
+    include_type_for_serialization: true
+    include_root_in_json: false
+    preload_models: false
+    raise_not_found_error: false
+    scope_overwrite_exception: true
+    use_activesupport_time_zone: true
+    use_utc: false
+  sessions:
+    default:
+      database: workflow_test
+      username: <%= ENV['DB_USER'] %>
+      password: <%= ENV['DB_PASS'] %>
+      hosts:
+        - <%= ENV['DB_HOST'] %>
