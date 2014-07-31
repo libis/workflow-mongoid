@@ -5,10 +5,12 @@ require 'mongoid_indifferent_access'
 module LIBIS
   module Workflow
     module Mongoid
-      class BaseModel
-        include ::Mongoid::Document
-        include ::Mongoid::Timestamps
-        include ::Mongoid::Extensions::Hash::IndifferentAccess
+      module BaseModel
+        def self.included(base)
+          base.include ::Mongoid::Document
+          base.include ::Mongoid::Timestamps
+          base.include ::Mongoid::Extensions::Hash::IndifferentAccess
+        end
       end
     end
   end

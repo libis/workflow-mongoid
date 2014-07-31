@@ -1,14 +1,12 @@
 # encoding: utf-8
-require 'mongoid/document'
-require 'mongoid_indifferent_access'
+require 'LIBIS_Workflow'
+require 'libis/workflow/mongoid/base_model'
 
 module LIBIS
   module Workflow
     module Mongoid
       class WorkItem < LIBIS::Workflow::WorkItem
-        include ::Mongoid::Document
-        include ::Mongoid::Timestamps
-        include ::Mongoid::Extensions::Hash::IndifferentAccess
+        include BaseModel
 
         field :status, type: Symbol, default: :START
         field :options, type: Hash, default: -> { Hash.new }

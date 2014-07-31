@@ -1,7 +1,6 @@
 # encoding: utf-8
 require 'LIBIS_Workflow'
-require 'mongoid/document'
-require 'mongoid_indifferent_access'
+require 'libis/workflow/mongoid/base_model'
 require 'fileutils'
 
 module LIBIS
@@ -9,9 +8,7 @@ module LIBIS
     module Mongoid
 
       class WorkflowRun < LIBIS::Workflow::WorkflowRun
-        include ::Mongoid::Document
-        include ::Mongoid::Timestamps
-        include ::Mongoid::Extensions::Hash::IndifferentAccess
+        include BaseModel
 
         field :start_date, type: Time, default: -> { Time.now }
         belongs_to :workflow, inverse_of: :workflow_runs, class_name: 'LIBIS::Workflow::Mongoid::WorkflowDefinition'
