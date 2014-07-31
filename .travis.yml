@@ -1,0 +1,26 @@
+language: ruby
+cache: bundler
+branches:
+  only:
+    - master
+rvm:
+  - 1.9.3
+  - ruby-head
+  - jruby-19mode
+jdk:
+  - openjdk7
+  - oraclejdk7
+  - oraclejdk8
+matrix:
+  exclude:
+    - rvm: 1.9.3
+      jdk: oraclejdk7
+    - rvm: 1.9.3
+      jdk: oraclejdk8
+    - rvm: ruby-head
+      jdk: oraclejdk7
+    - rvm: ruby-head
+      jdk: oraclejdk8
+services:
+  - mongodb
+before_script: ./.travis/db_prepare.sh
