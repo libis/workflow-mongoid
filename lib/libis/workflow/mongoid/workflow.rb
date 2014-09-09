@@ -7,7 +7,7 @@ module LIBIS
   module Workflow
     module Mongoid
 
-      class WorkflowDefinition < LIBIS::Workflow::WorkflowDefinition
+      class Workflow < LIBIS::Workflow::Definition
         include BaseModel
 
         field :name, type: String
@@ -50,7 +50,6 @@ module LIBIS
         def set_config(cfg)
           LIBIS::Workflow::Mongoid::WorkflowRun.require_all
 
-          puts ENV
           super(cfg)
 
           cfg[:tasks].each  do |m|

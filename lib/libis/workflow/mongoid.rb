@@ -11,7 +11,7 @@ module LIBIS
       autoload :WorkItem, 'libis/workflow/mongoid/work_item'
       autoload :FileItem, 'libis/workflow/mongoid/file_item'
       autoload :Worker, 'libis/workflow/mongoid/worker'
-      autoload :WorkflowDefinition, 'libis/workflow/mongoid/workflow_definition'
+      autoload :Workflow, 'libis/workflow/mongoid/workflow'
       autoload :WorkflowInput, 'libis/workflow/mongoid/workflow_input'
       autoload :WorkflowRun, 'libis/workflow/mongoid/workflow_run'
       autoload :WorkflowTask, 'libis/workflow/mongoid/workflow_task'

@@ -1,6 +1,6 @@
 # encoding: utf-8
 require 'LIBIS_Workflow'
-require 'libis/workflow/mongoid/workflow_definition'
+require 'libis/workflow/mongoid/workflow'
 
 module LIBIS
   module Workflow
@@ -13,7 +13,7 @@ module LIBIS
           @workflow_name = workflow_def.name
           @log_path = options.delete :log_path
           @options = options.dup
-          @workflow = LIBIS::Workflow::Mongoid::WorkflowDefinition.find_by(name: @workflow_name)
+          @workflow = LIBIS::Workflow::Mongoid::Workflow.find_by(name: @workflow_name)
           raise RuntimeError.new("Workflow '#{@workflow_name}' not found") unless @workflow
         end
 

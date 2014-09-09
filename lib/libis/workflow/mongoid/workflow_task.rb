@@ -9,6 +9,7 @@ module LIBIS
         include BaseModel
 
         field :name, type: String
+        field :options, type: Hash, default: -> { Hash.new }
         field :default_options, type: Hash, default: -> { Hash.new }
 
         has_many :workflow_tasks, inverse_of: :parent, class_name: 'LIBIS::Workflow::Mongoid::WorkflowTask'
@@ -18,19 +19,19 @@ module LIBIS
 
         index({name: 1}, {unique: 1})
 
-        def initialize(cfg = nil)
-          self.parent = (cfg[:parent] rescue nil)
-          self.
+        def initialize(parent, cfg = nil)
+          super parent
+          configure cfg
         end
 
         def configure(cfg)
           self.name = cfg[:name] || cfg[:class] || self.class.name
-          @tasks = (cfg[:tasks] || []).map do |task|
+          (cfg[:tasks] || []).each do |task_cfg|
             task_class = Task
-            task_class = task[:class].constantize if task[:class]
-            task_instance = task_class.new self, task.symbolize_keys!
-            (item.failed? and not task_instance.options[:always_run]) ? nil : task_instance
-          end.compact
+            task_class = task_cfg[:class].constantize if task_cfg[:class]
+            task_instance = task_class.new self, task_cfg.symbolize_keys!
+            workflow_tasks << task_instance
+          end
 
         end
 
@@ -51,9 +52,16 @@ module LIBIS
           }.delete_if { |_, v| (v.nil? || (v.respond_to?(:empty?) && v.empty?)) rescue false }
         end
 
-        def config=(cfg)
+        def set_config(cfg)
           self.name = cfg[:name] || cfg[:class] || self.class.name
           self.options = self.default_options.merge(cfg)
+          self.name = cfg[:name] || cfg[:class] || self.class.name
+          (cfg[:tasks] || []).each do |task_cfg|
+            task_class = Task
+            task_class = task_cfg[:class].constantize if task_cfg[:class]
+            task_instance = task_class.new self, task_cfg.symbolize_keys!
+            workflow_tasks << task_instance
+          end
         end
 
         def set_parent(p)

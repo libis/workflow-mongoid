@@ -10,6 +10,7 @@ module LIBIS
 
         def initialize
           super
+
         end
 
         def database_connect(config_file = './mongoid.yml', environment = nil)

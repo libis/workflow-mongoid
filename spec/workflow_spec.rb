@@ -23,7 +23,7 @@ describe 'TestWorkflow' do
       cfg.database_connect './mongoid.yml', :test
     end
 
-    @workflow = ::LIBIS::Workflow::Mongoid::WorkflowDefinition.new
+    @workflow = ::LIBIS::Workflow::Mongoid::Workflow.new
     @workflow.set_config(
         tasks: [
             { class: 'CollectFiles' },
@@ -41,7 +41,7 @@ describe 'TestWorkflow' do
         }
     )
 
-    @workflow2 = ::LIBIS::Workflow::Mongoid::WorkflowDefinition.new
+    @workflow2 = ::LIBIS::Workflow::Mongoid::Workflow.new
     @workflow2.set_config(
         tasks: [
             { class: 'CollectFiles' },
