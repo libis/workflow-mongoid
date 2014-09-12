@@ -5,7 +5,7 @@ module LIBIS
   module Workflow
     module Mongoid
 
-      class WorkflowInput
+      class Input
         include BaseModel
 
         field :name, type: String

@@ -2,7 +2,7 @@
 require 'LIBIS_Workflow_Mongoid'
 require 'digest'
 
-class ChecksumTester < ::LIBIS::Workflow::Mongoid::WorkflowTask
+class ChecksumTester < ::LIBIS::Workflow::Mongoid::Task
   def process
     check_item_type TestFileItem
 

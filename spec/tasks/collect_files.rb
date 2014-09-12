@@ -3,7 +3,7 @@ require 'LIBIS_Workflow_Mongoid'
 
 require_relative '../items'
 
-class CollectFiles < ::LIBIS::Workflow::Mongoid::WorkflowTask
+class CollectFiles < ::LIBIS::Workflow::Mongoid::Task
   def process
     check_item_type TestDirItem
     collect_files workitem

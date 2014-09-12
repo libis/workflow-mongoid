@@ -11,10 +11,10 @@ module LIBIS
       autoload :WorkItem, 'libis/workflow/mongoid/work_item'
       autoload :FileItem, 'libis/workflow/mongoid/file_item'
       autoload :Worker, 'libis/workflow/mongoid/worker'
-      autoload :WorkflowDefinition, 'libis/workflow/mongoid/workflow_definition'
-      autoload :WorkflowInput, 'libis/workflow/mongoid/workflow_input'
+      autoload :Definition, 'libis/workflow/mongoid/definition'
+      autoload :Input, 'libis/workflow/mongoid/input'
       autoload :WorkflowRun, 'libis/workflow/mongoid/workflow_run'
-      autoload :WorkflowTask, 'libis/workflow/mongoid/workflow_task'
+      autoload :Task, 'libis/workflow/mongoid/task'
 
       def self.configure
         yield Config.instance

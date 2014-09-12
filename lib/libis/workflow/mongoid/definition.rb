@@ -1,28 +1,28 @@
 # encoding: utf-8
 require 'libis/workflow/mongoid/base_model'
-require_relative 'workflow_task'
-require_relative 'workflow_input'
+require_relative 'task'
+require_relative 'input'
 
 module LIBIS
   module Workflow
     module Mongoid
 
-      class WorkflowDefinition < LIBIS::Workflow::WorkflowDefinition
+      class Definition < LIBIS::Workflow::Definition
         include BaseModel
 
         field :name, type: String
         field :description, type: String
 
-        embeds_many :workflow_inputs, class_name: 'LIBIS::Workflow::Mongoid::WorkflowInput'
-        has_and_belongs_to_many :workflow_tasks, inverse_of: nil, class_name: 'LIBIS::Workflow::Mongoid::WorkflowTask'
+        embeds_many :inputs, class_name: 'LIBIS::Workflow::Mongoid::Input'
+        has_and_belongs_to_many :tasks, inverse_of: :workflow, class_name: 'LIBIS::Workflow::Mongoid::Task'
 
-        has_many :workflow_runs, inverse_of: :workflow, class_name: 'LIBIS::Workflow::Mongoid::WorkflowRun'
+        has_many :runs, inverse_of: :workflow, class_name: 'LIBIS::Workflow::Mongoid::Run'
 
         index({name: 1}, {unique: 1})
 
         def run(opts = {})
 
-          wfr = self.workflow_runs.build
+          wfr = self.runs.build
           wfr.save
           wfr.run opts
           wfr
@@ -30,11 +30,11 @@ module LIBIS
         end
 
         def tasks
-          self[:workflow_task_ids].each_with_object([]) { |id, a| h = workflow_tasks.find(id); a << h } rescue []
+          self[:task_ids].each_with_object([]) { |id, a| h = tasks.find(id); a << h } rescue []
         end
 
-        def inputs
-          self.workflow_inputs
+        def input
+          self.input
         end
 
         def config

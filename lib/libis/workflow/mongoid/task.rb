@@ -5,32 +5,23 @@ require 'libis/workflow/mongoid/base_model'
 module LIBIS
   module Workflow
     module Mongoid
-      class WorkflowTask < LIBIS::Workflow::Task
+      class Task < LIBIS::Workflow::Task
         include BaseModel
 
-        field :name, type: String
-        field :default_options, type: Hash, default: -> { Hash.new }
+        belongs_to :parent, inverse_of: :tasks, class_name: 'LIBIS::Workflow::Mongoid::Task'
 
-        has_many :workflow_tasks, inverse_of: :parent, class_name: 'LIBIS::Workflow::Mongoid::WorkflowTask'
-        belongs_to :parent, inverse_of: :tasks, class_name: 'LIBIS::Workflow::Mongoid::WorkflowTask'
+        field :name, type: String
+        field :class, type: String
+        field :options, type: Hash, default: -> { Hash.new }
+
+        has_many :tasks, inverse_of: :parent, class_name: 'LIBIS::Workflow::Mongoid::Task'
 
         before_validation :set_name
 
         index({name: 1}, {unique: 1})
 
-        def initialize(cfg = nil)
-          self.parent = (cfg[:parent] rescue nil)
-          self.
-        end
-
         def configure(cfg)
           self.name = cfg[:name] || cfg[:class] || self.class.name
-          @tasks = (cfg[:tasks] || []).map do |task|
-            task_class = Task
-            task_class = task[:class].constantize if task[:class]
-            task_instance = task_class.new self, task.symbolize_keys!
-            (item.failed? and not task_instance.options[:always_run]) ? nil : task_instance
-          end.compact
 
         end
 
