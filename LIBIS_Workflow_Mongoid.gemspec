@@ -1,6 +1,12 @@
 # encoding: utf-8
 
-require File.expand_path(File.join(File.dirname(__FILE__), 'lib/libis/workflow/mongoid/version'))
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+require 'libis/workflow/mongoid/version'
+
+mv_env = ENV['MONGOID_VERSION'] || '4.0'
+mongoid_version = mv_env == 'master' ? '{github: "mongoid/mongoid"}' : "~> #{mv_env}"
 
 Gem::Specification.new do |gem|
   gem.name = 'LIBIS_Worfklow_Mongoid'
@@ -21,9 +27,14 @@ Gem::Specification.new do |gem|
 
   gem.require_paths = ['lib']
 
-  gem.add_runtime_dependency 'LIBIS_Workflow', '1.0.2'
-  gem.add_runtime_dependency 'mongoid'
+  gem.add_runtime_dependency 'LIBIS_Workflow', ::LIBIS::Workflow::Mongoid::VERSION # version numbers synchronised
+  gem.add_runtime_dependency 'mongoid', mongoid_version
   gem.add_runtime_dependency 'mongoid-indifferent-access'
+
+  gem.add_runtime_dependency 'sidekiq'
+  if mv_env =~ /^3\./
+    gem.add_runtime_dependency 'kiqstand'
+  end
 
   gem.add_development_dependency 'bundler', '~> 1.6'
   gem.add_development_dependency 'rake'

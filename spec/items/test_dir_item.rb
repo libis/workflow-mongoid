@@ -1,35 +1,21 @@
 # encoding: utf-8
-require 'LIBIS_Workflow_Mongoid'
+require 'libis/workflow/mongoid/workitems/dir_item'
 
-class TestDirItem < ::LIBIS::Workflow::Mongoid::WorkItem
+class TestDirItem < ::LIBIS::Workflow::Mongoid::DirItem
 
-  def dirname
-    dir = options[:dirname]
-    if dir
-      raise RuntimeError, "'#{dir}' is not a directory" unless File.directory? dir
-    end
-    dir
-  end
-
-  def name
-    @name ||= dirname
-  end
-
-  def name=(n)
-    @name = n
-  end
-
-  def to_string
-    name
+  def name=(dir)
+    raise RuntimeError, "'#{dir}' is not a directory" unless File.directory? dir
+    super dir
   end
 
   def file_list
-    return [] unless dirname
-    Dir.entries(dirname).select { |f| File.file? File.join(dirname, f) }
+    return [] unless long_name
+    Dir.entries(long_name).select { |f| File.file? File.join(long_name, f) }
   end
 
   def dir_list
-    return [] unless dirname
-    Dir.entries(dirname).select { |f| File.directory? File.join(dirname, f) }.reject { |f| %w'. ..'.include? f }
+    return [] unless long_name
+    Dir.entries(long_name).select { |f| File.directory? File.join(long_name, f) }.reject { |f| %w'. ..'.include? f }
   end
+
 end

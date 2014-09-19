@@ -1,24 +1,11 @@
 # encoding: utf-8
-require 'LIBIS_Workflow_Mongoid'
+require 'libis/workflow/mongoid/workitems/file_item'
 
 class TestFileItem < ::LIBIS::Workflow::Mongoid::FileItem
 
-  def initialize(file)
-    super()
+  def name=(file)
     raise RuntimeError, "'#{file}' is not a file" unless File.file? file
-    set_file file
-  end
-
-  def name
-    @name ||= filename
-  end
-
-  def name=(n)
-    @name = n
-  end
-
-  def to_string
-    name
+    super file
   end
 
   def filesize

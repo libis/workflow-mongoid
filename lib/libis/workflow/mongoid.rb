@@ -6,20 +6,16 @@ module LIBIS
   module Workflow
     module Mongoid
 
-      autoload :BaseModel, 'libis/workflow/mongoid/base_model'
       autoload :Config, 'libis/workflow/mongoid/config'
-      autoload :WorkItem, 'libis/workflow/mongoid/work_item'
-      autoload :FileItem, 'libis/workflow/mongoid/file_item'
-      autoload :Worker, 'libis/workflow/mongoid/worker'
       autoload :Workflow, 'libis/workflow/mongoid/workflow'
-      autoload :WorkflowInput, 'libis/workflow/mongoid/workflow_input'
-      autoload :WorkflowRun, 'libis/workflow/mongoid/workflow_run'
-      autoload :WorkflowTask, 'libis/workflow/mongoid/workflow_task'
+      autoload :Run, 'libis/workflow/mongoid/run'
+      autoload :Worker, 'libis/workflow/mongoid/worker'
 
       def self.configure
-        yield Config.instance
+        yield ::LIBIS::Workflow::Mongoid::Config.instance
       end
 
     end
+
   end
 end

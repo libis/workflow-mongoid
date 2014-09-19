@@ -11,6 +11,7 @@ jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
+env:
 matrix:
   exclude:
     - rvm: 1.9.3

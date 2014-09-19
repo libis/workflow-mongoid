@@ -1,9 +1,10 @@
 # encoding: utf-8
-require 'LIBIS_Workflow_Mongoid'
 require 'backports/rails/string'
 
-class CamelizeName < ::LIBIS::Workflow::Mongoid::WorkflowTask
+require 'libis/workflow/workitems'
+
+class CamelizeName < ::LIBIS::Workflow::Task
   def process
-    workitem.name = workitem.name.camelize
+    workitem.properties[:name] = workitem.long_name.camelize
   end
 end

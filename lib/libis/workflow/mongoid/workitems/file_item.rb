@@ -4,9 +4,11 @@ require_relative 'work_item'
 module LIBIS
   module Workflow
     module Mongoid
-      class FileItem < WorkItem
+
+      class FileItem < ::LIBIS::Workflow::Mongoid::WorkItem
         include LIBIS::Workflow::FileItem
       end
+
     end
   end
 end

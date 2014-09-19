@@ -1,23 +1,19 @@
 # encoding: utf-8
-require 'LIBIS_Workflow_Mongoid'
+require 'libis/exceptions'
 
 require_relative '../items'
 
-class CollectFiles < ::LIBIS::Workflow::Mongoid::WorkflowTask
-  def process
-    check_item_type TestDirItem
-    collect_files workitem
-  end
+class CollectFiles < ::LIBIS::Workflow::Task
 
-  def collect_files(dir_item)
-    base_dir = dir_item.dirname
-    dir_item.dir_list.sort.each do |dirname|
-      subdir_item = TestDirItem.new(File.join base_dir, dirname)
-      collect_files subdir_item
-      workitem << subdir_item
-    end
-    dir_item.file_list.sort.each do |filename|
-      workitem << TestFileItem.new(File.join base_dir, filename)
+  def process
+    if item_type? TestRun
+      dir = TestDirItem.new
+      dir.name = workitem.options[:dirname]
+      workitem << dir
+    elsif item_type? TestDirItem
+      workitem.collect(TestFileItem, recursive: true)
+    else
+      # do nothin
     end
   end
 
