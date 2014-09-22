@@ -7,11 +7,14 @@ module LIBIS
     module Mongoid
 
       module Base
-        def self.included(base)
-          base.include ::Mongoid::Document
-          base.include ::Mongoid::Timestamps
-          base.include ::Mongoid::Extensions::Hash::IndifferentAccess
-          base.index created_at: 1
+        extend ::ActiveSupport::Concern
+
+        included do
+          include ::Mongoid::Document
+          include ::Mongoid::Timestamps
+          include ::Mongoid::Extensions::Hash::IndifferentAccess
+
+          index created_at: 1
         end
 
       end
