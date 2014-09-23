@@ -9,7 +9,7 @@ mv_env = ENV['MONGOID_VERSION'] || '4.0'
 mongoid_version = mv_env == 'master' ? '{github: "mongoid/mongoid"}' : "~> #{mv_env}"
 
 Gem::Specification.new do |gem|
-  gem.name = 'LIBIS_Worfklow_Mongoid'
+  gem.name = 'LIBIS_Workflow_Mongoid'
   gem.version = ::LIBIS::Workflow::Mongoid::VERSION
   gem.date = Date.today.to_s
 
