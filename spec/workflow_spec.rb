@@ -179,7 +179,7 @@ STR
     workflow = TestWorkflow.first
     expect(workflow.workflow_runs.count).to be > 0
     run = workflow.workflow_runs.first
-    expect(run.is_a TestRun).to eq true
+    expect(run.is_a? TestRun).to eq true
     expect(run.nil?).to eq false
     expect(run.options[:dirname]).to eq 'spec/items'
     expect(run.properties[:ingest_failed]).to eq false
