@@ -2,25 +2,34 @@
 
 require 'libis/workflow/base/workflow'
 require 'libis/workflow/mongoid/base'
-require 'libis/workflow/mongoid/run'
 
 module LIBIS
   module Workflow
     module Mongoid
-      class Workflow
-        include ::LIBIS::Workflow::Base::Workflow
-        include ::LIBIS::Workflow::Mongoid::Base
 
-        store_in collection: 'workflow_defintions'
+      module Workflow
 
-        field :name, type: String
-        field :description, type: String
-        field :config, type: Hash, default: -> { Hash.new }
+        def self.included(klass)
+          klass.class_eval do
+            include ::LIBIS::Workflow::Base::Workflow
+            include ::LIBIS::Workflow::Mongoid::Base
 
-        has_many :workflow_runs, inverse_of: :workflow, class_name: '::LIBIS::Workflow::Mongoid::Run',
-                 dependent: :destroy, autosave: true, order: :created_at.asc
+            store_in collection: 'workflow_defintions'
 
-        index({name: 1}, {unique: 1})
+            field :name, type: String
+            field :description, type: String
+            field :config, type: Hash, default: -> { Hash.new }
+
+            index({name: 1}, {unique: 1})
+
+            def klass.run_class(run_klass)
+              has_many :workflow_runs, inverse_of: :workflow, class_name: run_klass.to_s,
+                       dependent: :destroy, autosave: true, order: :created_at.asc
+            end
+
+          end
+
+        end
 
       end
     end

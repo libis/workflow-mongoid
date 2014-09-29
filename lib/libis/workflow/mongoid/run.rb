@@ -2,36 +2,49 @@
 require 'fileutils'
 
 require 'libis/workflow/base/run'
-require 'libis/workflow/mongoid/workitems/work_item'
+require 'libis/workflow/mongoid/work_item_base'
 
 module LIBIS
   module Workflow
     module Mongoid
 
-      class Run
-        include ::LIBIS::Workflow::Base::Run
-        include ::LIBIS::Workflow::Mongoid::WorkItemBase
+      module Run
+        # extend ActiveSupport::Concern
 
-        store_in collection: 'workflow_runs'
+        def self.included(klass)
+          klass.class_eval do
+            include ::LIBIS::Workflow::Base::Run
+            include ::LIBIS::Workflow::Mongoid::WorkItemBase
 
-        attr_accessor :tasks
+            store_in collection: 'workflow_runs'
 
-        field :start_date, type: Time, default: -> { Time.now }
-        belongs_to :workflow, inverse_of: :workflow_runs, class_name: 'LIBIS::Workflow::Mongoid::Workflow'
+            attr_accessor :tasks
 
-        has_many :items, class_name: 'LIBIS::Workflow::Mongoid::WorkItem', inverse_of: :run,
-                 dependent: :destroy, autosave: true, order: :created_at.asc
+            field :start_date, type: Time, default: -> { Time.now }
 
-        set_callback(:destroy, :before) do |document|
-          wd = document.work_dir
-          FileUtils.rmtree wd if Dir.exist? wd
+
+            set_callback(:destroy, :before) do |document|
+              wd = document.work_dir
+              FileUtils.rmtree wd if Dir.exist? wd
+            end
+
+            index start_date: 1
+
+            def klass.workflow_class(wf_klass)
+              belongs_to :workflow, inverse_of: :workflow_runs, class_name: wf_klass.to_s
+            end
+
+            def klass.item_class(item_klass)
+              has_many :items, inverse_of: :run, class_name: item_klass.to_s,
+                       dependent: :destroy, autosave: true, order: :created_at.asc
+            end
+          end
         end
-
-        index start_date: 1
 
         def run(opts = {})
           self.tasks = []
           self.items = []
+          # noinspection RubySuperCallWithoutSuperclassInspection
           super opts
         end
 

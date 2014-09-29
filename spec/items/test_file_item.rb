@@ -1,7 +1,8 @@
 # encoding: utf-8
-require 'libis/workflow/mongoid/workitems/file_item'
+require_relative 'test_item'
 
-class TestFileItem < ::LIBIS::Workflow::Mongoid::FileItem
+class TestFileItem < TestItem
+  include ::LIBIS::Workflow::FileItem
 
   def name=(file)
     raise RuntimeError, "'#{file}' is not a file" unless File.file? file

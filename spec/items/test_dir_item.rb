@@ -1,7 +1,8 @@
 # encoding: utf-8
-require 'libis/workflow/mongoid/workitems/dir_item'
+require_relative 'test_item'
 
-class TestDirItem < ::LIBIS::Workflow::Mongoid::DirItem
+class TestDirItem < TestItem
+  include ::LIBIS::Workflow::DirItem
 
   def name=(dir)
     raise RuntimeError, "'#{dir}' is not a directory" unless File.directory? dir
