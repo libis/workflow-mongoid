@@ -27,6 +27,11 @@ module LIBIS
                        dependent: :destroy, autosave: true, order: :created_at.asc
             end
 
+            def create_run_object
+              # noinspection RubyResolve
+              self.workflow_runs.build
+            end
+
           end
 
         end

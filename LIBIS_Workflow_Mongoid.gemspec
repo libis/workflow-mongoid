@@ -27,7 +27,7 @@ Gem::Specification.new do |gem|
 
   gem.require_paths = ['lib']
 
-  gem.add_runtime_dependency 'LIBIS_Workflow', '2.0.beta.1'
+  gem.add_runtime_dependency 'LIBIS_Workflow', '2.0.beta.2'
   gem.add_runtime_dependency 'mongoid', mongoid_version
   gem.add_runtime_dependency 'mongoid-indifferent-access'
 

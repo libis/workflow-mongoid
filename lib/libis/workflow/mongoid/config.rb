@@ -24,6 +24,11 @@ module LIBIS
          super(name)
        end
 
+       private
+
+       def initialize
+         ::LIBIS::Workflow::Config.instance
+       end
       end
     end
   end
