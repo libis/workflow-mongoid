@@ -5,13 +5,15 @@ require_relative '../items'
 
 class CollectFiles < ::LIBIS::Workflow::Task
 
-  def process
-    if item_type? TestRun
+  parameter location: '.'
+
+  def process(item)
+    if item.is_a? TestRun
       dir = TestDirItem.new
-      dir.name = workitem.options[:dirname]
-      workitem << dir
-    elsif item_type? TestDirItem
-      workitem.collect(TestFileItem, recursive: true)
+      dir.name = self.options[:location]
+      item << dir
+    elsif item.is_a? TestDirItem
+      item.collect(TestFileItem, recursive: false)
     else
       # do nothin
     end

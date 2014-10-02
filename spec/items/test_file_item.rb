@@ -7,6 +7,7 @@ class TestFileItem < TestItem
   def name=(file)
     raise RuntimeError, "'#{file}' is not a file" unless File.file? file
     super file
+    properties[:checksum] = ::Digest::SHA2.new(256).hexdigest(File.read(file))
   end
 
   def filesize

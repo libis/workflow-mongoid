@@ -4,7 +4,9 @@ require 'backports/rails/string'
 require 'libis/workflow/workitems'
 
 class CamelizeName < ::LIBIS::Workflow::Task
-  def process
-    workitem.properties[:name] = workitem.long_name.camelize
+
+  def process(item)
+    item.properties[:name] = item.long_name.camelize
   end
+
 end

@@ -37,7 +37,7 @@ describe 'TestWorkflow' do
         tasks: [
             {class: 'CollectFiles', recursive: true},
             {
-                class: 'ProcessFiles',
+                name: 'ProcessFiles',
                 subitems: true,
                 tasks: [
                     {class: 'ChecksumTester',  recursive: true},
@@ -45,14 +45,16 @@ describe 'TestWorkflow' do
                 ]
             }
         ],
-        run_object: 'TestRun',
         input: {
-            dirname: {default: '.'}
+            dirname: {default: '.', propagate_to: 'CollectFiles#location'},
+            checksum_type: {default: 'SHA1', propagate_to: 'ProcessFiles/ChecksumTester'}
         }
     )
     @workflow.save
 
-    @run = @workflow.run(dirname: DIRNAME)
+    # noinspection RubyStringKeysInHashInspection
+    @run = @workflow.run(dirname: DIRNAME, checksum_type: 'SHA2')
+    puts @logoutput.string
 
   end
 
@@ -95,10 +97,11 @@ DEBUG -- CollectFiles - test_item.rb : Completed
 DEBUG -- CollectFiles - items : Processing subitem (4/4): test_run.rb
 DEBUG -- CollectFiles - test_run.rb : Started
 DEBUG -- CollectFiles - test_run.rb : Completed
-DEBUG -- CollectFiles - items : 4 of 4 items passed
+DEBUG -- CollectFiles - items : 4 of 4 subitems passed
 DEBUG -- CollectFiles - items : Completed
-DEBUG -- CollectFiles - TestRun : 1 of 1 items passed
+DEBUG -- CollectFiles - TestRun : 1 of 1 subitems passed
 DEBUG -- CollectFiles - TestRun : Completed
+DEBUG -- ProcessFiles - TestRun : Started
 DEBUG -- ProcessFiles - TestRun : Processing subitem (1/1): items
 DEBUG -- ProcessFiles - items : Started
 DEBUG -- ProcessFiles - items : Running subtask (1/2): ChecksumTester
@@ -115,7 +118,7 @@ DEBUG -- ProcessFiles/ChecksumTester - test_item.rb : Completed
 DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (4/4): test_run.rb
 DEBUG -- ProcessFiles/ChecksumTester - test_run.rb : Started
 DEBUG -- ProcessFiles/ChecksumTester - test_run.rb : Completed
-DEBUG -- ProcessFiles/ChecksumTester - items : 4 of 4 items passed
+DEBUG -- ProcessFiles/ChecksumTester - items : 4 of 4 subitems passed
 DEBUG -- ProcessFiles/ChecksumTester - items : Completed
 DEBUG -- ProcessFiles - items : Running subtask (2/2): CamelizeName
 DEBUG -- ProcessFiles/CamelizeName - items : Started
@@ -131,10 +134,11 @@ DEBUG -- ProcessFiles/CamelizeName - Spec::Items::TestItem.rb : Completed
 DEBUG -- ProcessFiles/CamelizeName - Spec::Items : Processing subitem (4/4): test_run.rb
 DEBUG -- ProcessFiles/CamelizeName - test_run.rb : Started
 DEBUG -- ProcessFiles/CamelizeName - Spec::Items::TestRun.rb : Completed
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items : 4 of 4 items passed
+DEBUG -- ProcessFiles/CamelizeName - Spec::Items : 4 of 4 subitems passed
 DEBUG -- ProcessFiles/CamelizeName - Spec::Items : Completed
 DEBUG -- ProcessFiles - Spec::Items : Completed
-DEBUG -- ProcessFiles - TestRun : 1 of 1 items passed
+DEBUG -- ProcessFiles - TestRun : 1 of 1 subitems passed
+DEBUG -- ProcessFiles - TestRun : Completed
 STR
     sample_out = sample_out.lines.to_a
     output = @logoutput.string.lines
@@ -144,8 +148,8 @@ STR
       expect(o[/(?<=\] ).*/]).to eq sample_out[i].strip
     end
 
-    expect(@run.summary['DEBUG']).to eq 55
-    expect(@run.log_history.count).to eq 6
+    expect(@run.summary['DEBUG']).to eq 57
+    expect(@run.log_history.count).to eq 8
     expect(@run.status_log.count).to eq 6
     expect(@run.items.first.log_history.count).to eq 25
     expect(@run.items.first.status_log.count).to eq 8
@@ -157,16 +161,15 @@ STR
     expect(workflow.nil?).to eq false
     expect(workflow.name).to eq 'TestWorkflow'
     expect(workflow.description).to eq 'Workflow for testing'
-    expect(workflow.config[:run_object]).to eq 'TestRun'
-    expect(workflow.input.count).to eq 1
+    expect(workflow.input.count).to eq 2
+    puts workflow.input[:dirname].inspect
     expect(workflow.input[:dirname][:default]).to eq '.'
     expect(workflow.config[:tasks].count).to eq 3
     expect(workflow.config[:tasks][0][:class]).to eq 'CollectFiles'
     expect(workflow.config[:tasks][0][:recursive]).to eq true
-    expect(workflow.config[:tasks][1][:class]).to eq 'ProcessFiles'
+    expect(workflow.config[:tasks][1][:name]).to eq 'ProcessFiles'
     expect(workflow.config[:tasks][1][:subitems]).to eq true
     expect(workflow.config[:tasks][1][:tasks].count).to eq 2
-    expect(workflow.config[:tasks][1][:class]).to eq 'ProcessFiles'
     expect(workflow.config[:tasks][1][:tasks][0][:class]).to eq 'ChecksumTester'
     expect(workflow.config[:tasks][1][:tasks][0][:recursive]).to eq true
     expect(workflow.config[:tasks][1][:tasks][1][:class]).to eq 'CamelizeName'
@@ -183,9 +186,9 @@ STR
     expect(run.nil?).to eq false
     expect(run.options[:dirname]).to eq 'spec/items'
     expect(run.properties[:ingest_failed]).to eq false
-    expect(run.log_history.count).to eq 6
+    expect(run.log_history.count).to eq 8
     expect(run.status_log.count).to eq 6
-    expect(run.summary[:DEBUG]).to eq 55
+    expect(run.summary[:DEBUG]).to eq 57
   end
 
   # noinspection RubyResolve
