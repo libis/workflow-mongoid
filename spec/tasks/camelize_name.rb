@@ -6,7 +6,8 @@ require 'libis/workflow/workitems'
 class CamelizeName < ::LIBIS::Workflow::Task
 
   def process(item)
-    item.properties[:name] = item.long_name.camelize
+    return unless (item.is_a?(TestFileItem) || item.is_a?(TestDirItem))
+    item.properties[:name] = item.name.camelize
   end
 
 end

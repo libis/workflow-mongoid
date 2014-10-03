@@ -53,7 +53,7 @@ describe 'TestWorkflow' do
     @workflow.save
 
     # noinspection RubyStringKeysInHashInspection
-    @run = @workflow.run(dirname: DIRNAME, checksum_type: 'SHA2')
+    @run = @workflow.run(dirname: DIRNAME, checksum_type: 'SHA256')
     puts @logoutput.string
 
   end
@@ -75,7 +75,7 @@ describe 'TestWorkflow' do
     expect(@run.items.first.first.class).to eq TestFileItem
 
     @run.items.first.each_with_index do |x, i|
-      expect(x.name).to eq %w'Spec::Items::TestDirItem.rb Spec::Items::TestFileItem.rb Spec::Items::TestItem.rb Spec::Items::TestRun.rb'[i]
+      expect(x.name).to eq %w'TestDirItem.rb TestFileItem.rb TestItem.rb TestRun.rb'[i]
     end
   end
 
@@ -86,17 +86,17 @@ DEBUG -- CollectFiles - TestRun : Started
 DEBUG -- CollectFiles - TestRun : Processing subitem (1/1): items
 DEBUG -- CollectFiles - items : Started
 DEBUG -- CollectFiles - items : Processing subitem (1/4): test_dir_item.rb
-DEBUG -- CollectFiles - test_dir_item.rb : Started
-DEBUG -- CollectFiles - test_dir_item.rb : Completed
+DEBUG -- CollectFiles - items/test_dir_item.rb : Started
+DEBUG -- CollectFiles - items/test_dir_item.rb : Completed
 DEBUG -- CollectFiles - items : Processing subitem (2/4): test_file_item.rb
-DEBUG -- CollectFiles - test_file_item.rb : Started
-DEBUG -- CollectFiles - test_file_item.rb : Completed
+DEBUG -- CollectFiles - items/test_file_item.rb : Started
+DEBUG -- CollectFiles - items/test_file_item.rb : Completed
 DEBUG -- CollectFiles - items : Processing subitem (3/4): test_item.rb
-DEBUG -- CollectFiles - test_item.rb : Started
-DEBUG -- CollectFiles - test_item.rb : Completed
+DEBUG -- CollectFiles - items/test_item.rb : Started
+DEBUG -- CollectFiles - items/test_item.rb : Completed
 DEBUG -- CollectFiles - items : Processing subitem (4/4): test_run.rb
-DEBUG -- CollectFiles - test_run.rb : Started
-DEBUG -- CollectFiles - test_run.rb : Completed
+DEBUG -- CollectFiles - items/test_run.rb : Started
+DEBUG -- CollectFiles - items/test_run.rb : Completed
 DEBUG -- CollectFiles - items : 4 of 4 subitems passed
 DEBUG -- CollectFiles - items : Completed
 DEBUG -- CollectFiles - TestRun : 1 of 1 subitems passed
@@ -107,36 +107,36 @@ DEBUG -- ProcessFiles - items : Started
 DEBUG -- ProcessFiles - items : Running subtask (1/2): ChecksumTester
 DEBUG -- ProcessFiles/ChecksumTester - items : Started
 DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (1/4): test_dir_item.rb
-DEBUG -- ProcessFiles/ChecksumTester - test_dir_item.rb : Started
-DEBUG -- ProcessFiles/ChecksumTester - test_dir_item.rb : Completed
+DEBUG -- ProcessFiles/ChecksumTester - items/test_dir_item.rb : Started
+DEBUG -- ProcessFiles/ChecksumTester - items/test_dir_item.rb : Completed
 DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (2/4): test_file_item.rb
-DEBUG -- ProcessFiles/ChecksumTester - test_file_item.rb : Started
-DEBUG -- ProcessFiles/ChecksumTester - test_file_item.rb : Completed
+DEBUG -- ProcessFiles/ChecksumTester - items/test_file_item.rb : Started
+DEBUG -- ProcessFiles/ChecksumTester - items/test_file_item.rb : Completed
 DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (3/4): test_item.rb
-DEBUG -- ProcessFiles/ChecksumTester - test_item.rb : Started
-DEBUG -- ProcessFiles/ChecksumTester - test_item.rb : Completed
+DEBUG -- ProcessFiles/ChecksumTester - items/test_item.rb : Started
+DEBUG -- ProcessFiles/ChecksumTester - items/test_item.rb : Completed
 DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (4/4): test_run.rb
-DEBUG -- ProcessFiles/ChecksumTester - test_run.rb : Started
-DEBUG -- ProcessFiles/ChecksumTester - test_run.rb : Completed
+DEBUG -- ProcessFiles/ChecksumTester - items/test_run.rb : Started
+DEBUG -- ProcessFiles/ChecksumTester - items/test_run.rb : Completed
 DEBUG -- ProcessFiles/ChecksumTester - items : 4 of 4 subitems passed
 DEBUG -- ProcessFiles/ChecksumTester - items : Completed
 DEBUG -- ProcessFiles - items : Running subtask (2/2): CamelizeName
 DEBUG -- ProcessFiles/CamelizeName - items : Started
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items : Processing subitem (1/4): test_dir_item.rb
-DEBUG -- ProcessFiles/CamelizeName - test_dir_item.rb : Started
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items::TestDirItem.rb : Completed
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items : Processing subitem (2/4): test_file_item.rb
-DEBUG -- ProcessFiles/CamelizeName - test_file_item.rb : Started
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items::TestFileItem.rb : Completed
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items : Processing subitem (3/4): test_item.rb
-DEBUG -- ProcessFiles/CamelizeName - test_item.rb : Started
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items::TestItem.rb : Completed
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items : Processing subitem (4/4): test_run.rb
-DEBUG -- ProcessFiles/CamelizeName - test_run.rb : Started
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items::TestRun.rb : Completed
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items : 4 of 4 subitems passed
-DEBUG -- ProcessFiles/CamelizeName - Spec::Items : Completed
-DEBUG -- ProcessFiles - Spec::Items : Completed
+DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (1/4): test_dir_item.rb
+DEBUG -- ProcessFiles/CamelizeName - Items/test_dir_item.rb : Started
+DEBUG -- ProcessFiles/CamelizeName - Items/TestDirItem.rb : Completed
+DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (2/4): test_file_item.rb
+DEBUG -- ProcessFiles/CamelizeName - Items/test_file_item.rb : Started
+DEBUG -- ProcessFiles/CamelizeName - Items/TestFileItem.rb : Completed
+DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (3/4): test_item.rb
+DEBUG -- ProcessFiles/CamelizeName - Items/test_item.rb : Started
+DEBUG -- ProcessFiles/CamelizeName - Items/TestItem.rb : Completed
+DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (4/4): test_run.rb
+DEBUG -- ProcessFiles/CamelizeName - Items/test_run.rb : Started
+DEBUG -- ProcessFiles/CamelizeName - Items/TestRun.rb : Completed
+DEBUG -- ProcessFiles/CamelizeName - Items : 4 of 4 subitems passed
+DEBUG -- ProcessFiles/CamelizeName - Items : Completed
+DEBUG -- ProcessFiles - Items : Completed
 DEBUG -- ProcessFiles - TestRun : 1 of 1 subitems passed
 DEBUG -- ProcessFiles - TestRun : Completed
 STR
@@ -198,7 +198,7 @@ STR
     item = workflow.workflow_runs.first.items.first
     expect(item.nil?).to eq false
     expect(item.is_a? TestDirItem).to eq true
-    expect(item.properties[:name]).to eq 'Spec::Items'
+    expect(item.properties[:name]).to eq 'Items'
     expect(item.properties[:ingest_failed]).to eq false
     expect(item.log_history.count).to eq 25
     expect(item.status_log.count).to eq 8

@@ -9,14 +9,8 @@ class TestDirItem < TestItem
     super dir
   end
 
-  def file_list
-    return [] unless long_name
-    Dir.entries(long_name).select { |f| File.file? File.join(long_name, f) }
-  end
-
-  def dir_list
-    return [] unless long_name
-    Dir.entries(long_name).select { |f| File.directory? File.join(long_name, f) }.reject { |f| %w'. ..'.include? f }
+  def name
+    self.properties[:name] || super
   end
 
 end

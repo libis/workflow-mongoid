@@ -1,4 +1,6 @@
 # encoding: utf-8
+require 'LIBIS_Tools'
+
 require_relative 'test_item'
 
 class TestFileItem < TestItem
@@ -7,7 +9,11 @@ class TestFileItem < TestItem
   def name=(file)
     raise RuntimeError, "'#{file}' is not a file" unless File.file? file
     super file
-    properties[:checksum] = ::Digest::SHA2.new(256).hexdigest(File.read(file))
+    properties[:checksum] = ::LIBIS::Tools::Checksum.hexdigest(file, :SHA256)
+  end
+
+  def name
+    self.properties[:name] || super
   end
 
   def filesize
