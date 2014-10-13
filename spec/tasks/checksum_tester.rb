@@ -15,12 +15,9 @@ class ChecksumTester < ::LIBIS::Workflow::Task
     return unless item.is_a? TestFileItem
 
     checksum_type = options[:checksum_type]
-    checksum = ::LIBIS::Tools::Checksum.hexdigest(item.long_name, checksum_type.to_sym)
-    unless item.properties[:checksum] == checksum
-      raise ::LIBIS::WorkflowError, "Checksum test #{checksum_type} failed for #{item.long_name}"
-    end
-  rescue
-    warn "Checksum type '#{self.options[:checksum_type]}' not supported. Check ignored."
+    checksum = ::LIBIS::Tools::Checksum.hexdigest(item.filepath, checksum_type.to_sym)
+    return if item.properties[:checksum] == checksum
+    raise ::LIBIS::WorkflowError, "Checksum test #{checksum_type} failed for #{item.filepath}"
   end
 
 end

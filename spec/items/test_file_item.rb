@@ -6,7 +6,7 @@ require_relative 'test_item'
 class TestFileItem < TestItem
   include ::LIBIS::Workflow::FileItem
 
-  def name=(file)
+  def filename=(file)
     raise RuntimeError, "'#{file}' is not a file" unless File.file? file
     super file
     properties[:checksum] = ::LIBIS::Tools::Checksum.hexdigest(file, :SHA256)

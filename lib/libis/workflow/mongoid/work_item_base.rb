@@ -24,10 +24,6 @@ module LIBIS
 
         end
 
-        def name
-          self.options[:name]
-        end
-
         def item_count
           self.items.size
         end
