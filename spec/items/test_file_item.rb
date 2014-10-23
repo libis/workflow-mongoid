@@ -8,8 +8,8 @@ class TestFileItem < TestItem
 
   def filename=(file)
     raise RuntimeError, "'#{file}' is not a file" unless File.file? file
+    set_checksum :SHA256, ::LIBIS::Tools::Checksum.hexdigest(file, :SHA256)
     super file
-    properties[:checksum] = ::LIBIS::Tools::Checksum.hexdigest(file, :SHA256)
   end
 
   def name

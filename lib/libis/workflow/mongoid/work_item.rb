@@ -29,6 +29,15 @@ module LIBIS
           self[:parent] || self[:run]
         end
 
+        def get_run
+          p = self[:parent]
+          p ? p.get_run : self[:run]
+        end
+
+        def get_root
+          self[:parent].get_root rescue self
+        end
+
       end
 
     end

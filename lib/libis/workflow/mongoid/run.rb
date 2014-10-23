@@ -22,7 +22,6 @@ module LIBIS
 
             field :start_date, type: Time, default: -> { Time.now }
 
-
             set_callback(:destroy, :before) do |document|
               wd = document.work_dir
               FileUtils.rmtree wd if Dir.exist? wd
