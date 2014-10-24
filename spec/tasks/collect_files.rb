@@ -16,7 +16,7 @@ class CollectFiles < ::LIBIS::Workflow::Task
     if item.is_a? TestRun
       add_item(item, options[:location])
     elsif item.is_a? TestDirItem
-      collect_files(item, item.filepath)
+      collect_files(item, item.fullpath)
     end
   end
 

@@ -26,7 +26,7 @@ class ChecksumTester < ::LIBIS::Workflow::Task
   end
 
   def test_checksum(item, checksum_type)
-    checksum = ::LIBIS::Tools::Checksum.hexdigest(item.filepath, checksum_type.to_sym)
+    checksum = ::LIBIS::Tools::Checksum.hexdigest(item.fullpath, checksum_type.to_sym)
     return if item.checksum(checksum_type) == checksum
     raise ::LIBIS::WorkflowError, "Checksum test #{checksum_type} failed for #{item.filepath}"
   end
