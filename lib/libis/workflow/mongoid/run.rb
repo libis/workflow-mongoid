@@ -47,6 +47,17 @@ module LIBIS
           super opts
         end
 
+        def restart(taskname)
+          self.tasks = []
+          self.tasks = self.workflow.tasks(self)
+          configure_tasks self.options
+          self.status = :RESTARTED
+          self.tasks.each do |task|
+            next if self.status == :RESTARTED && task.name != taskname
+            task.run self
+          end
+        end
+
         def parent
           nil
         end

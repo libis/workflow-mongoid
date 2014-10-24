@@ -32,6 +32,14 @@ module LIBIS
               self.workflow_runs.build
             end
 
+            def restart(id, task = nil)
+              # noinspection RubyResolve
+              run_object = self.workflow_runs.select { |run| run.id == id }
+              raise WorkflowError, "Run #{id} not found" unless run_object
+              run_object.restart task
+              run_object
+            end
+
           end
 
         end
