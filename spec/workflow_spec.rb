@@ -3,10 +3,11 @@
 require 'rspec'
 require 'stringio'
 
-require 'LIBIS_Workflow_Mongoid'
+require 'libis-workflow-mongoid'
 
 require_relative 'spec_helper'
 require_relative 'test_workflow'
+require_relative 'items'
 
 DIRNAME = 'spec/items'
 
@@ -18,7 +19,7 @@ describe 'TestWorkflow' do
 
     @logoutput = StringIO.new
 
-    ::LIBIS::Workflow::Mongoid.configure do |cfg|
+    ::Libis::Workflow::Mongoid.configure do |cfg|
       cfg.itemdir = File.join(File.dirname(__FILE__), 'items')
       cfg.taskdir = File.join(File.dirname(__FILE__), 'tasks')
       cfg.workdir = File.join(File.dirname(__FILE__), 'work')
@@ -27,6 +28,11 @@ describe 'TestWorkflow' do
       cfg.logger.level = Logger::DEBUG
       cfg.database_connect 'mongoid.yml', :test
     end
+
+    TestWorkflow.create_indexes
+    TestRun.create_indexes
+    TestFileItem.create_indexes
+    TestDirItem.create_indexes
 
     TestWorkflow.each { |wf| wf.destroy }
 
@@ -54,7 +60,6 @@ describe 'TestWorkflow' do
 
     # noinspection RubyStringKeysInHashInspection
     @run = @workflow.run(dirname: DIRNAME, checksum_type: 'SHA256')
-    puts @logoutput.string
 
   end
 
@@ -62,7 +67,7 @@ describe 'TestWorkflow' do
 
     expect(@workflow.config[:tasks].size).to eq 3
     expect(@workflow.config[:tasks].first[:class]).to eq 'CollectFiles'
-    expect(@workflow.config[:tasks].last[:class]).to eq '::LIBIS::Workflow::Tasks::Analyzer'
+    expect(@workflow.config[:tasks].last[:class]).to eq '::Libis::Workflow::Tasks::Analyzer'
 
   end
 
@@ -162,7 +167,6 @@ STR
     expect(workflow.name).to eq 'TestWorkflow'
     expect(workflow.description).to eq 'Workflow for testing'
     expect(workflow.input.count).to eq 2
-    puts workflow.input[:dirname].inspect
     expect(workflow.input[:dirname][:default]).to eq '.'
     expect(workflow.config[:tasks].count).to eq 3
     expect(workflow.config[:tasks][0][:class]).to eq 'CollectFiles'
@@ -174,7 +178,7 @@ STR
     expect(workflow.config[:tasks][1][:tasks][0][:recursive]).to eq true
     expect(workflow.config[:tasks][1][:tasks][1][:class]).to eq 'CamelizeName'
     expect(workflow.config[:tasks][1][:tasks][1][:recursive]).to eq true
-    expect(workflow.config[:tasks][2][:class]).to eq '::LIBIS::Workflow::Tasks::Analyzer'
+    expect(workflow.config[:tasks][2][:class]).to eq '::Libis::Workflow::Tasks::Analyzer'
   end
 
   # noinspection RubyResolve

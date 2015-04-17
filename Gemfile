@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-gemspec name: 'LIBIS_Workflow_Mongoid', development_group: :test
+gemspec name: 'libis-workflow-mongoid', development_group: :test
 

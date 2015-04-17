@@ -1,8 +1,8 @@
 # encoding: utf-8
-require 'LIBIS_Workflow'
+require 'libis-workflow'
 require 'libis/workflow/mongoid/base'
 
-module LIBIS
+module Libis
   module Workflow
     module Mongoid
 
@@ -10,8 +10,8 @@ module LIBIS
 
         def self.included(klass)
           klass.class_eval do
-            include LIBIS::Workflow::WorkItem
-            include LIBIS::Workflow::Mongoid::Base
+            include Libis::Workflow::WorkItem
+            include Libis::Workflow::Mongoid::Base
 
             field :options, type: Hash, default: -> { Hash.new }
             field :properties, type: Hash, default: -> { Hash.new }
@@ -29,7 +29,7 @@ module LIBIS
         end
 
         def add_item(item)
-          return self unless item and item.is_a? LIBIS::Workflow::Mongoid::WorkItem
+          return self unless item and item.is_a? Libis::Workflow::Mongoid::WorkItem
           self.items << item
           self.save!
           self

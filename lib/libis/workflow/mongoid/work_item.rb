@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'libis/workflow/mongoid/work_item_base'
 
-module LIBIS
+module Libis
   module Workflow
     module Mongoid
 
@@ -9,7 +9,7 @@ module LIBIS
 
         def self.included(klass)
           klass.class_eval do
-            include LIBIS::Workflow::Mongoid::WorkItemBase
+            include Libis::Workflow::Mongoid::WorkItemBase
 
             store_in collection: 'workflow_items'
 

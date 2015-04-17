@@ -3,7 +3,7 @@ require 'backports/rails/string'
 
 require 'libis/workflow/workitems'
 
-class CamelizeName < ::LIBIS::Workflow::Task
+class CamelizeName < ::Libis::Workflow::Task
 
   def process(item)
     return unless (item.is_a?(TestFileItem) || item.is_a?(TestDirItem))

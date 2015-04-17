@@ -3,7 +3,7 @@
 require 'libis/workflow/base/workflow'
 require 'libis/workflow/mongoid/base'
 
-module LIBIS
+module Libis
   module Workflow
     module Mongoid
 
@@ -11,8 +11,8 @@ module LIBIS
 
         def self.included(klass)
           klass.class_eval do
-            include ::LIBIS::Workflow::Base::Workflow
-            include ::LIBIS::Workflow::Mongoid::Base
+            include ::Libis::Workflow::Base::Workflow
+            include ::Libis::Workflow::Mongoid::Base
 
             store_in collection: 'workflow_defintions'
 

@@ -3,8 +3,9 @@ require 'singleton'
 require 'mongoid'
 
 require 'libis/workflow/config'
+require 'libis/workflow/mongoid/run'
 
-module LIBIS
+module Libis
   module Workflow
     module Mongoid
 
@@ -16,18 +17,18 @@ module LIBIS
        end
 
        def method_missing(name, *args, &block)
-         ::LIBIS::Workflow::Config.instance.send(name, *args, &block)
+         ::Libis::Workflow::Config.instance.send(name, *args, &block)
        end
 
        def self.const_missing(name)
-         return ::LIBIS::Workflow::Config.const_get(name) if ::LIBIS::Workflow::Config.const_defined?(name)
+         return ::Libis::Workflow::Config.const_get(name) if ::Libis::Workflow::Config.const_defined?(name)
          super(name)
        end
 
        private
 
        def initialize
-         ::LIBIS::Workflow::Config.instance
+         ::Libis::Workflow::Config.instance
        end
       end
     end

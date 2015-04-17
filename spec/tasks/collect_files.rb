@@ -3,7 +3,7 @@ require 'libis/exceptions'
 
 require_relative '../items'
 
-class CollectFiles < ::LIBIS::Workflow::Task
+class CollectFiles < ::Libis::Workflow::Task
 
   parameter location: '.',
             description: 'Dir location to start scanning for files.'

@@ -9,8 +9,8 @@ mv_env = ENV['MONGOID_VERSION'] || '4.0'
 mongoid_version = mv_env == 'master' ? '{github: "mongoid/mongoid"}' : "~> #{mv_env}"
 
 Gem::Specification.new do |gem|
-  gem.name = 'LIBIS_Workflow_Mongoid'
-  gem.version = ::LIBIS::Workflow::Mongoid::VERSION
+  gem.name = 'libis-workflow-mongoid'
+  gem.version = ::Libis::Workflow::Mongoid::VERSION
   gem.date = Date.today.to_s
 
   gem.summary = %q{Mongoid persistence for the LIBIS Workflow framework.}
@@ -27,7 +27,7 @@ Gem::Specification.new do |gem|
 
   gem.require_paths = ['lib']
 
-  gem.add_runtime_dependency 'LIBIS_Workflow', '2.0.beta.3'
+  gem.add_runtime_dependency 'libis-workflow', '~> 2.0.beta'
   gem.add_runtime_dependency 'mongoid', mongoid_version
   gem.add_runtime_dependency 'mongoid-indifferent-access'
 

@@ -15,7 +15,5 @@ test:
   sessions:
     default:
       database: workflow_test
-      username: <%= ENV['DB_USER'] %>
-      password: <%= ENV['DB_PASS'] %>
       hosts:
-        - <%= ENV['DB_HOST'] %>
+        - localhost:27017

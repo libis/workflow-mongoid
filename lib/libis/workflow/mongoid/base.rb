@@ -3,7 +3,7 @@ require 'mongoid'
 require 'mongoid/document'
 require 'mongoid_indifferent_access'
 
-module LIBIS
+module Libis
   module Workflow
     module Mongoid
 

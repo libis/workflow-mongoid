@@ -2,7 +2,7 @@
 require_relative 'test_item'
 
 class TestDirItem < TestItem
-  include ::LIBIS::Workflow::DirItem
+  include ::Libis::Workflow::DirItem
 
   def name=(dir)
     raise RuntimeError, "'#{dir}' is not a directory" unless File.directory? dir

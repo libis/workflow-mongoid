@@ -1,8 +1,8 @@
 # encoding: utf-8
 
-require 'LIBIS_Workflow'
+require 'libis-workflow'
 
-module LIBIS
+module Libis
   module Workflow
     module Mongoid
 
@@ -14,7 +14,7 @@ module LIBIS
       autoload :Worker, 'libis/workflow/mongoid/worker'
 
       def self.configure
-        yield ::LIBIS::Workflow::Mongoid::Config.instance
+        yield ::Libis::Workflow::Mongoid::Config.instance
       end
 
     end

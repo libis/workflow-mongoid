@@ -1,8 +1,8 @@
 # encoding: utf-8
-require 'LIBIS_Workflow_Mongoid'
+require 'libis-workflow-mongoid'
 
 class TestRun
-  include ::LIBIS::Workflow::Mongoid::Run
+  include ::Libis::Workflow::Mongoid::Run
 
   item_class 'TestItem'
   workflow_class 'TestWorkflow'
