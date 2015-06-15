@@ -24,7 +24,7 @@ describe 'TestWorkflow' do
       cfg.taskdir = File.join(File.dirname(__FILE__), 'tasks')
       cfg.workdir = File.join(File.dirname(__FILE__), 'work')
       cfg.logger = Logger.new @logoutput
-      cfg.set_formatter
+      cfg.set_log_formatter
       cfg.logger.level = Logger::DEBUG
       cfg.database_connect 'mongoid.yml', :test
     end
@@ -150,7 +150,7 @@ STR
 
     expect(output.count).to eq sample_out.count
     output.each_with_index do |o, i|
-      expect(o[/(?<=\] ).*/]).to eq sample_out[i].strip
+      expect(o.strip).to match(/#{Regexp.escape sample_out[i].strip}$/)
     end
 
     expect(@run.summary['DEBUG']).to eq 57
