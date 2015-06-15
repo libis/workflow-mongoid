@@ -148,7 +148,7 @@ STR
     sample_out = sample_out.lines.to_a
     output = @logoutput.string.lines
 
-    expect(sample_out.count).to eq output.count
+    expect(output.count).to eq sample_out.count
     output.each_with_index do |o, i|
       expect(o[/(?<=\] ).*/]).to eq sample_out[i].strip
     end

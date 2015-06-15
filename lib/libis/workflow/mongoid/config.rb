@@ -9,13 +9,18 @@ module Libis
   module Workflow
     module Mongoid
 
-     class Config < ::Libis::Workflow::Config
+      # noinspection RubyConstantNamingConvention
+      Config = ::Libis::Workflow::Config
 
-       def self.database_connect(config_file = './mongoid.yml', environment = nil)
-         ::Mongoid.load! config_file, environment
-       end
-
+      Config.define_singleton_method(:database_connect) do |config_file = './mongoid.yml', environment = nil|
+        # noinspection RubyResolve
+        instance.database_connect(config_file, environment)
       end
+
+      Config.send(:define_method, :database_connect) do |config_file = './mongoid.yml', environment = nil|
+        ::Mongoid.load! config_file, environment
+      end
+
     end
   end
 end
