@@ -14,7 +14,7 @@ module Libis
             store_in collection: 'workflow_items'
 
             has_many :items, inverse_of: :parent, class_name: klass.to_s,
-                     dependent: :destroy, autosave: true, order: :created_at.asc
+                     dependent: :destroy, autosave: true, order: :_id.asc
             belongs_to :parent, inverse_of: :items, class_name: klass.to_s
 
             def klass.run_class(run_klass)
