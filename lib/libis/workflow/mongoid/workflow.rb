@@ -14,7 +14,7 @@ module Libis
             include ::Libis::Workflow::Base::Workflow
             include ::Libis::Workflow::Mongoid::Base
 
-            store_in collection: 'workflow_defintions'
+            store_in collection: 'workflow_definitions'
 
             field :name, type: String
             field :description, type: String
