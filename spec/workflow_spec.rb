@@ -9,21 +9,21 @@ require_relative 'spec_helper'
 require_relative 'test_workflow'
 require_relative 'items'
 
-DIRNAME = 'spec/items'
+$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 describe 'TestWorkflow' do
 
-  before :all do
-    $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+  let(:dirname) { File.absolute_path(File.join(File.dirname(__FILE__), 'items')) }
 
+  let(:logoutput) { StringIO.new }
 
-    @logoutput = StringIO.new
-
+  let(:workflow) {
+    # noinspection RubyResolve
     ::Libis::Workflow::Mongoid.configure do |cfg|
       cfg.itemdir = File.join(File.dirname(__FILE__), 'items')
       cfg.taskdir = File.join(File.dirname(__FILE__), 'tasks')
       cfg.workdir = File.join(File.dirname(__FILE__), 'work')
-      cfg.logger = Logger.new @logoutput
+      cfg.logger = Logger.new logoutput
       cfg.set_log_formatter
       cfg.logger.level = Logger::DEBUG
       cfg.database_connect 'mongoid.yml', :test
@@ -36,8 +36,8 @@ describe 'TestWorkflow' do
 
     TestWorkflow.each { |wf| wf.destroy }
 
-    @workflow = TestWorkflow.new
-    @workflow.configure(
+    workflow = TestWorkflow.new
+    workflow.configure(
         name: 'TestWorkflow',
         description: 'Workflow for testing',
         tasks: [
@@ -56,35 +56,43 @@ describe 'TestWorkflow' do
             checksum_type: {default: 'SHA1', propagate_to: 'ProcessFiles/ChecksumTester'}
         }
     )
-    @workflow.save
+    workflow.save
+    workflow
+  }
 
+  let(:run) {
     # noinspection RubyStringKeysInHashInspection
-    @run = @workflow.run(dirname: DIRNAME, checksum_type: 'SHA256')
-
-  end
+    workflow.run(dirname: dirname, checksum_type: 'SHA256')
+  }
 
   it 'should contain three tasks' do
 
-    expect(@workflow.config[:tasks].size).to eq 3
-    expect(@workflow.config[:tasks].first[:class]).to eq 'CollectFiles'
-    expect(@workflow.config[:tasks].last[:class]).to eq '::Libis::Workflow::Tasks::Analyzer'
+    expect(workflow.config[:tasks].size).to eq 3
+    expect(workflow.config[:tasks].first[:class]).to eq 'CollectFiles'
+    expect(workflow.config[:tasks].last[:class]).to eq '::Libis::Workflow::Tasks::Analyzer'
 
   end
 
   it 'should camelize the workitem name' do
 
-    expect(@run.options[:dirname]).to eq DIRNAME
-    expect(@run.items.count).to eq 1
-    expect(@run.items.first.class).to eq TestDirItem
-    expect(@run.items.first.count).to eq 4
-    expect(@run.items.first.first.class).to eq TestFileItem
+    expect(run.options[:dirname]).to eq dirname
+    expect(run.items.count).to eq 1
+    expect(run.items.first.class).to eq TestDirItem
+    expect(run.items.first.count).to eq 4
+    expect(run.items.first.first.class).to eq TestFileItem
 
-    @run.items.first.each_with_index do |x, i|
+    run.items.first.each_with_index do |x, i|
       expect(x.name).to eq %w'TestDirItem.rb TestFileItem.rb TestItem.rb TestRun.rb'[i]
     end
   end
 
   it 'should return expected debug output' do
+
+    expect(run.summary['DEBUG']).to eq 57
+    expect(run.log_history.count).to eq 8
+    expect(run.status_log.count).to eq 6
+    expect(run.items.first.log_history.count).to eq 25
+    expect(run.items.first.status_log.count).to eq 8
 
     sample_out = <<STR
 DEBUG -- CollectFiles - TestRun : Started
@@ -146,60 +154,57 @@ DEBUG -- ProcessFiles - TestRun : 1 of 1 subitems passed
 DEBUG -- ProcessFiles - TestRun : Completed
 STR
     sample_out = sample_out.lines.to_a
-    output = @logoutput.string.lines
+    output = logoutput.string.lines
 
     expect(output.count).to eq sample_out.count
     output.each_with_index do |o, i|
       expect(o.strip).to match(/#{Regexp.escape sample_out[i].strip}$/)
     end
 
-    expect(@run.summary['DEBUG']).to eq 57
-    expect(@run.log_history.count).to eq 8
-    expect(@run.status_log.count).to eq 6
-    expect(@run.items.first.log_history.count).to eq 25
-    expect(@run.items.first.status_log.count).to eq 8
-
   end
 
   it 'find workflow' do
-    workflow = TestWorkflow.first
-    expect(workflow.nil?).to eq false
-    expect(workflow.name).to eq 'TestWorkflow'
-    expect(workflow.description).to eq 'Workflow for testing'
-    expect(workflow.input.count).to eq 2
-    expect(workflow.input[:dirname][:default]).to eq '.'
-    expect(workflow.config[:tasks].count).to eq 3
-    expect(workflow.config[:tasks][0][:class]).to eq 'CollectFiles'
-    expect(workflow.config[:tasks][0][:recursive]).to eq true
-    expect(workflow.config[:tasks][1][:name]).to eq 'ProcessFiles'
-    expect(workflow.config[:tasks][1][:subitems]).to eq true
-    expect(workflow.config[:tasks][1][:tasks].count).to eq 2
-    expect(workflow.config[:tasks][1][:tasks][0][:class]).to eq 'ChecksumTester'
-    expect(workflow.config[:tasks][1][:tasks][0][:recursive]).to eq true
-    expect(workflow.config[:tasks][1][:tasks][1][:class]).to eq 'CamelizeName'
-    expect(workflow.config[:tasks][1][:tasks][1][:recursive]).to eq true
-    expect(workflow.config[:tasks][2][:class]).to eq '::Libis::Workflow::Tasks::Analyzer'
+    workflow
+    wf = TestWorkflow.first
+    expect(wf.nil?).to eq false
+    expect(wf.name).to eq 'TestWorkflow'
+    expect(wf.description).to eq 'Workflow for testing'
+    expect(wf.input.count).to eq 2
+    expect(wf.input[:dirname][:default]).to eq '.'
+    expect(wf.config[:tasks].count).to eq 3
+    expect(wf.config[:tasks][0][:class]).to eq 'CollectFiles'
+    expect(wf.config[:tasks][0][:recursive]).to eq true
+    expect(wf.config[:tasks][1][:name]).to eq 'ProcessFiles'
+    expect(wf.config[:tasks][1][:subitems]).to eq true
+    expect(wf.config[:tasks][1][:tasks].count).to eq 2
+    expect(wf.config[:tasks][1][:tasks][0][:class]).to eq 'ChecksumTester'
+    expect(wf.config[:tasks][1][:tasks][0][:recursive]).to eq true
+    expect(wf.config[:tasks][1][:tasks][1][:class]).to eq 'CamelizeName'
+    expect(wf.config[:tasks][1][:tasks][1][:recursive]).to eq true
+    expect(wf.config[:tasks][2][:class]).to eq '::Libis::Workflow::Tasks::Analyzer'
   end
 
   # noinspection RubyResolve
   it 'find run' do
-    workflow = TestWorkflow.first
-    expect(workflow.workflow_runs.count).to be > 0
-    run = workflow.workflow_runs.first
-    expect(run.is_a? TestRun).to eq true
-    expect(run.nil?).to eq false
-    expect(run.options[:dirname]).to eq 'spec/items'
-    expect(run.properties[:ingest_failed]).to eq false
-    expect(run.log_history.count).to eq 8
-    expect(run.status_log.count).to eq 6
-    expect(run.summary[:DEBUG]).to eq 57
+    run
+    wf = TestWorkflow.first
+    expect(wf.workflow_runs.count).to be > 0
+    wf_run = wf.workflow_runs.first
+    expect(wf_run.is_a? TestRun).to eq true
+    expect(wf_run.nil?).to eq false
+    expect(wf_run.options[:dirname]).to eq dirname
+    expect(wf_run.properties[:ingest_failed]).to eq false
+    expect(wf_run.log_history.count).to eq 8
+    expect(wf_run.status_log.count).to eq 6
+    expect(wf_run.summary[:DEBUG]).to eq 57
   end
 
   # noinspection RubyResolve
   it 'find first item' do
-    workflow = TestWorkflow.first
-    expect(workflow.workflow_runs.first.items.count).to be > 0
-    item = workflow.workflow_runs.first.items.first
+    run
+    wf = TestWorkflow.first
+    expect(wf.workflow_runs.first.items.count).to be > 0
+    item = wf.workflow_runs.first.items.first
     expect(item.nil?).to eq false
     expect(item.is_a? TestDirItem).to eq true
     expect(item.properties[:name]).to eq 'Items'
