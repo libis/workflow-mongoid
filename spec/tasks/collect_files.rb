@@ -14,7 +14,7 @@ class CollectFiles < ::Libis::Workflow::Task
 
   def process(item)
     if item.is_a? TestRun
-      add_item(item, options[:location])
+      add_item(item, parameter(:location))
     elsif item.is_a? TestDirItem
       collect_files(item, item.fullpath)
     end
@@ -22,11 +22,11 @@ class CollectFiles < ::Libis::Workflow::Task
 
   def collect_files(item, dir)
     glob_string = dir
-    glob_string = File.join(glob_string, '**') if options[:subdirs]
+    glob_string = File.join(glob_string, '**') if parameter(:subdirs)
     glob_string = File.join(glob_string, '*')
 
     Dir.glob(glob_string).select do |x|
-      options[:selection] && !options[:selection].empty? ? x =~ Regexp.new(options[:selection]) : true
+      parameter(:selection) && !parameter(:selection).empty? ? x =~ Regexp.new(parameter(:selection)) : true
     end.sort.each do |file|
       next if %w'. ..'.include? file
       add_item(item, file)
@@ -39,8 +39,10 @@ class CollectFiles < ::Libis::Workflow::Task
             elsif File.directory?(file)
               TestDirItem.new
             else
-              Item.new
+              error 'Bad file type encountered: %s', file
+              nil
             end
+    return unless child
     child.filename = file
     item << child
   end

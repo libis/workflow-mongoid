@@ -14,7 +14,7 @@ class ChecksumTester < ::Libis::Workflow::Task
   def process(item)
     return unless item.is_a? TestFileItem
 
-    checksum_type = options[:checksum_type]
+    checksum_type = parameter(:checksum_type)
 
     if checksum_type.nil?
       ::Libis::Tools::Checksum::CHECKSUM_TYPES.each do |x|
