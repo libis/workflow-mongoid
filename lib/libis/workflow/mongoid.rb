@@ -2,6 +2,8 @@
 
 require 'libis-workflow'
 
+require_relative 'mongoid/version'
+
 module Libis
   module Workflow
     module Mongoid
