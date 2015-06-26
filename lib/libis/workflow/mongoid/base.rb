@@ -13,6 +13,7 @@ module Libis
         def self.included(klass)
           klass.class_eval do
             include ::Mongoid::Document
+            include ::Mongoid::Timestamps
             include ::Mongoid::Extensions::Hash::IndifferentAccess
             include ::Libis::Workflow::Mongoid::Sequence
             field :_id, type: Integer
