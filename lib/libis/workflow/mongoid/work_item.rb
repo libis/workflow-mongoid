@@ -21,17 +21,15 @@ module Libis
               belongs_to :run, inverse_of: :items, class_name: run_klass.to_s
             end
 
-
           end
         end
 
-        def parent
+        def get_parent
           self[:parent] || self[:run]
         end
 
         def get_run
-          p = self[:parent]
-          p ? p.get_run : self[:run]
+          self[:run] || self[:parent].get_run
         end
 
         def get_root
