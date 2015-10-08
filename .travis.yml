@@ -1,34 +1,33 @@
 language: ruby
+sudo: false
+bundler_args: --without development
 cache: bundler
-branches:
-  only:
-    - master
 rvm:
-  - 1.9.3
   - 2.1.0
+  - 2.2.0
   - ruby-head
-  - jruby-19mode
+  - jruby-9.0.1.0
 jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
-env:
-  - MONGOID_VERSION=3
-  - MONGOID_VERSION=4
 matrix:
   exclude:
-    - rvm: 1.9.3
+    - rvm: 2.1.0
       jdk: oraclejdk7
-    - rvm: 1.9.3
+    - rvm: 2.1.0
       jdk: oraclejdk8
-    - rvm: 2.1.0
+    - rvm: 2.2.0
       jdk: oraclejdk7
-    - rvm: 2.1.0
+    - rvm: 2.2.0
       jdk: oraclejdk8
     - rvm: ruby-head
       jdk: oraclejdk7
     - rvm: ruby-head
       jdk: oraclejdk8
+branches:
+  only:
+      - master
 services:
   - mongodb
 before_script: ./.travis/db_prepare.sh

@@ -5,9 +5,6 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'libis/workflow/mongoid/version'
 
-mv_env = ENV['MONGOID_VERSION'] || '5.0'
-mongoid_version = mv_env == 'master' ? '{github: "mongoid/mongoid"}' : "~> #{mv_env}"
-
 Gem::Specification.new do |gem|
   gem.name = 'libis-workflow-mongoid'
   gem.version = ::Libis::Workflow::Mongoid::VERSION
@@ -28,13 +25,9 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
 
   gem.add_runtime_dependency 'libis-workflow', '~> 2.0.beta'
-  gem.add_runtime_dependency 'mongoid', mongoid_version
+  gem.add_runtime_dependency 'mongoid', '~> 5.0'
   gem.add_runtime_dependency 'mongoid-indifferent-access'
-
   gem.add_runtime_dependency 'sidekiq'
-  if mv_env =~ /^3\./
-    gem.add_runtime_dependency 'kiqstand'
-  end
 
   gem.add_development_dependency 'bundler', '~> 1.6'
   gem.add_development_dependency 'rake'
