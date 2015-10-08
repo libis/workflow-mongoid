@@ -13,13 +13,29 @@ module Libis
         def self.included(klass)
           klass.class_eval do
             include ::Mongoid::Document
-            include ::Mongoid::Timestamps
+            include ::Mongoid::Timestamps::Created::Short
             include ::Mongoid::Extensions::Hash::IndifferentAccess
             include ::Libis::Workflow::Mongoid::Sequence
-            field :_id, type: Integer
+            field :_id, type: Integer, overwrite: true
             sequence :_id
-            index created_at: 1
+            index c_at: 1
           end
+        end
+
+        def dup
+          new_obj = self.class.new
+          new_obj.copy_attributes(self)
+        end
+
+        def copy_attributes(other)
+          self.set(
+              other.attributes.reject do |k, _|
+                %W(_id c_at).include? k.to_s
+              end.each_with_object({}) do |(k, v), h|
+                h[k] = v.duplicable? ? v.dup : v
+              end
+          )
+          self
         end
 
       end

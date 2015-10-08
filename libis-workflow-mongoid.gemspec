@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'libis/workflow/mongoid/version'
 
-mv_env = ENV['MONGOID_VERSION'] || '4.0'
+mv_env = ENV['MONGOID_VERSION'] || '5.0'
 mongoid_version = mv_env == 'master' ? '{github: "mongoid/mongoid"}' : "~> #{mv_env}"
 
 Gem::Specification.new do |gem|

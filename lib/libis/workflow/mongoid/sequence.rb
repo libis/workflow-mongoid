@@ -27,7 +27,8 @@ module Libis
                 default: lambda {
                   self.class.set_from_sequence(_field, prefix)
                 },
-                pre_processed: false
+                pre_processed: false,
+                overwrite: true
             )
             (options.keys - ::Mongoid::Fields::Validators::Macro::OPTIONS).each { |key| options.delete key }
             field(_field, options)
@@ -58,11 +59,15 @@ module Libis
 
           def sequences
             # mongo_session["#{self.collection_name.to_s}__seq"]
-            mongo_session["__sequences__"]
+            mongo_client["__sequences__"]
           end
 
           def seq_upsert(counter_id, change)
-            sequences.where(_id: counter_id).modify(change, upsert: true, new: true)
+            sequences.find_one_and_update({_id: counter_id},
+                                          change,
+                                          upsert: true,
+                                          return_document: :after
+            )
           end
 
         end

@@ -2,7 +2,7 @@
 require 'libis/tools/checksum'
 
 require 'libis/exceptions'
-require 'libis/workflow/workitems'
+require 'libis-workflow'
 
 class ChecksumTester < ::Libis::Workflow::Task
 

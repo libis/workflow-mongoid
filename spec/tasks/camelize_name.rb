@@ -1,7 +1,6 @@
 # encoding: utf-8
 require 'backports/rails/string'
-
-require 'libis/workflow/workitems'
+require 'libis-workflow'
 
 class CamelizeName < ::Libis::Workflow::Task
 

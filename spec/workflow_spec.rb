@@ -13,11 +13,10 @@ $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 describe 'TestWorkflow' do
 
-  let(:dirname) { File.absolute_path(File.join(File.dirname(__FILE__), 'items')) }
+  before(:context) do
+    @dirname = File.absolute_path(File.join(File.dirname(__FILE__), 'items'))
+    @logoutput = StringIO.new
 
-  let(:logoutput) { StringIO.new }
-
-  let(:workflow) {
     # noinspection RubyResolve
     ::Libis::Workflow::Mongoid.configure do |cfg|
       cfg.itemdir = File.join(File.dirname(__FILE__), 'items')
@@ -34,10 +33,8 @@ describe 'TestWorkflow' do
     TestFileItem.create_indexes
     TestDirItem.create_indexes
 
-    TestWorkflow.each { |wf| wf.destroy }
-
-    workflow = TestWorkflow.new
-    workflow.configure(
+    @workflow = TestWorkflow.find_or_initialize_by(name: 'TestWorkflow')
+    @workflow.configure(
         name: 'TestWorkflow',
         description: 'Workflow for testing',
         tasks: [
@@ -56,14 +53,17 @@ describe 'TestWorkflow' do
             checksum_type: {default: 'SHA1', propagate_to: 'ProcessFiles/ChecksumTester'}
         }
     )
-    workflow.save
-    workflow
-  }
+    # noinspection RubyResolve
+    @workflow.workflow_runs.each { |run| run.destroy! }
+    @workflow.save
+    @run = @workflow.run(dirname: dirname, checksum_type: 'SHA256')
 
-  let(:run) {
-    # noinspection RubyStringKeysInHashInspection
-    workflow.run(dirname: dirname, checksum_type: 'SHA256')
-  }
+  end
+
+  def dirname; @dirname; end
+  def logoutput; @logoutput; end
+  def workflow; @workflow; end
+  def run; @run; end
 
   it 'should contain three tasks' do
 
@@ -88,70 +88,37 @@ describe 'TestWorkflow' do
 
   it 'should return expected debug output' do
 
-    expect(run.summary['DEBUG']).to eq 57
-    expect(run.log_history.count).to eq 8
+    expect(run.summary[:DEBUG]).to eq 21
+    expect(run.log_history.count).to eq 4
     expect(run.status_log.count).to eq 6
-    expect(run.items.first.log_history.count).to eq 25
-    expect(run.items.first.status_log.count).to eq 8
+    item = run.items.first
+    expect(item.log_history.count).to eq 17
+    expect(item.status_log.count).to eq 8
+    expect(item.summary[:DEBUG]).to eq 17
+
 
     sample_out = <<STR
-DEBUG -- CollectFiles - TestRun : Started
 DEBUG -- CollectFiles - TestRun : Processing subitem (1/1): items
-DEBUG -- CollectFiles - items : Started
 DEBUG -- CollectFiles - items : Processing subitem (1/4): test_dir_item.rb
-DEBUG -- CollectFiles - items/test_dir_item.rb : Started
-DEBUG -- CollectFiles - items/test_dir_item.rb : Completed
 DEBUG -- CollectFiles - items : Processing subitem (2/4): test_file_item.rb
-DEBUG -- CollectFiles - items/test_file_item.rb : Started
-DEBUG -- CollectFiles - items/test_file_item.rb : Completed
 DEBUG -- CollectFiles - items : Processing subitem (3/4): test_item.rb
-DEBUG -- CollectFiles - items/test_item.rb : Started
-DEBUG -- CollectFiles - items/test_item.rb : Completed
 DEBUG -- CollectFiles - items : Processing subitem (4/4): test_run.rb
-DEBUG -- CollectFiles - items/test_run.rb : Started
-DEBUG -- CollectFiles - items/test_run.rb : Completed
 DEBUG -- CollectFiles - items : 4 of 4 subitems passed
-DEBUG -- CollectFiles - items : Completed
 DEBUG -- CollectFiles - TestRun : 1 of 1 subitems passed
-DEBUG -- CollectFiles - TestRun : Completed
-DEBUG -- ProcessFiles - TestRun : Started
 DEBUG -- ProcessFiles - TestRun : Processing subitem (1/1): items
-DEBUG -- ProcessFiles - items : Started
 DEBUG -- ProcessFiles - items : Running subtask (1/2): ChecksumTester
-DEBUG -- ProcessFiles/ChecksumTester - items : Started
 DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (1/4): test_dir_item.rb
-DEBUG -- ProcessFiles/ChecksumTester - items/test_dir_item.rb : Started
-DEBUG -- ProcessFiles/ChecksumTester - items/test_dir_item.rb : Completed
 DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (2/4): test_file_item.rb
-DEBUG -- ProcessFiles/ChecksumTester - items/test_file_item.rb : Started
-DEBUG -- ProcessFiles/ChecksumTester - items/test_file_item.rb : Completed
 DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (3/4): test_item.rb
-DEBUG -- ProcessFiles/ChecksumTester - items/test_item.rb : Started
-DEBUG -- ProcessFiles/ChecksumTester - items/test_item.rb : Completed
 DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (4/4): test_run.rb
-DEBUG -- ProcessFiles/ChecksumTester - items/test_run.rb : Started
-DEBUG -- ProcessFiles/ChecksumTester - items/test_run.rb : Completed
 DEBUG -- ProcessFiles/ChecksumTester - items : 4 of 4 subitems passed
-DEBUG -- ProcessFiles/ChecksumTester - items : Completed
 DEBUG -- ProcessFiles - items : Running subtask (2/2): CamelizeName
-DEBUG -- ProcessFiles/CamelizeName - items : Started
 DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (1/4): test_dir_item.rb
-DEBUG -- ProcessFiles/CamelizeName - Items/test_dir_item.rb : Started
-DEBUG -- ProcessFiles/CamelizeName - Items/TestDirItem.rb : Completed
 DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (2/4): test_file_item.rb
-DEBUG -- ProcessFiles/CamelizeName - Items/test_file_item.rb : Started
-DEBUG -- ProcessFiles/CamelizeName - Items/TestFileItem.rb : Completed
 DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (3/4): test_item.rb
-DEBUG -- ProcessFiles/CamelizeName - Items/test_item.rb : Started
-DEBUG -- ProcessFiles/CamelizeName - Items/TestItem.rb : Completed
 DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (4/4): test_run.rb
-DEBUG -- ProcessFiles/CamelizeName - Items/test_run.rb : Started
-DEBUG -- ProcessFiles/CamelizeName - Items/TestRun.rb : Completed
 DEBUG -- ProcessFiles/CamelizeName - Items : 4 of 4 subitems passed
-DEBUG -- ProcessFiles/CamelizeName - Items : Completed
-DEBUG -- ProcessFiles - Items : Completed
 DEBUG -- ProcessFiles - TestRun : 1 of 1 subitems passed
-DEBUG -- ProcessFiles - TestRun : Completed
 STR
     sample_out = sample_out.lines.to_a
     output = logoutput.string.lines
@@ -186,32 +153,20 @@ STR
 
   # noinspection RubyResolve
   it 'find run' do
-    run
     wf = TestWorkflow.first
-    expect(wf.workflow_runs.count).to be > 0
-    wf_run = wf.workflow_runs.first
-    expect(wf_run.is_a? TestRun).to eq true
-    expect(wf_run.nil?).to eq false
-    expect(wf_run.options[:dirname]).to eq dirname
-    expect(wf_run.properties[:ingest_failed]).to eq false
-    expect(wf_run.log_history.count).to eq 8
-    expect(wf_run.status_log.count).to eq 6
-    expect(wf_run.summary[:DEBUG]).to eq 57
+    expect(wf).to eq workflow
+    expect(workflow.workflow_runs.all.count).to eq 1
+    wf_run = workflow.workflow_runs.all.first
+    expect(wf_run).to eq run
   end
 
   # noinspection RubyResolve
   it 'find first item' do
-    run
-    wf = TestWorkflow.first
-    expect(wf.workflow_runs.first.items.count).to be > 0
-    item = wf.workflow_runs.first.items.first
+    item = run.items.first
     expect(item.nil?).to eq false
     expect(item.is_a? TestDirItem).to eq true
     expect(item.properties[:name]).to eq 'Items'
     expect(item.properties[:ingest_failed]).to eq false
-    expect(item.log_history.count).to eq 25
-    expect(item.status_log.count).to eq 8
-    expect(item.summary[:DEBUG]).to eq 49
   end
 
 end

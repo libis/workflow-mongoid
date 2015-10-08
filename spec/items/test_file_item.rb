@@ -1,10 +1,11 @@
 # encoding: utf-8
 require 'libis-tools'
+require 'libis-workflow'
 
 require_relative 'test_item'
 
 class TestFileItem < TestItem
-  include ::Libis::Workflow::FileItem
+  include ::Libis::Workflow::Base::FileItem
 
   def filename=(file)
     raise RuntimeError, "'#{file}' is not a file" unless File.file? file

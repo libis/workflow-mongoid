@@ -17,6 +17,14 @@ module Libis
                      dependent: :destroy, autosave: true, order: :_id.asc
             belongs_to :parent, inverse_of: :items, class_name: klass.to_s
 
+            # def destroy
+            #   self.items.each { |item| item.destroy! }
+            #   super
+            # end
+            set_callback(:destroy, :before) do |document|
+              document.items.each { |item| item.destroy! }
+            end
+
             def klass.run_class(run_klass)
               belongs_to :run, inverse_of: :items, class_name: run_klass.to_s
             end

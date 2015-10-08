@@ -1,6 +1,5 @@
 # encoding: utf-8
 require 'libis-workflow'
-require 'libis/workflow/mongoid/base'
 
 module Libis
   module Workflow
@@ -10,14 +9,32 @@ module Libis
 
         def self.included(klass)
           klass.class_eval do
-            include Libis::Workflow::WorkItem
+            include ::Libis::Workflow::Base::WorkItem
             include Libis::Workflow::Mongoid::Base
 
             field :options, type: Hash, default: -> { Hash.new }
             field :properties, type: Hash, default: -> { Hash.new }
 
-            field :log_history, type: Array, default: -> { Array.new }
-            field :status_log, type: Array, default: -> { Array.new }
+            has_many :logs, as: :logger, class_name: 'Libis::Workflow::Mongoid::LogEntry',
+                     dependent: :destroy, autosave: true, order: :_id.asc do
+              def log_history
+                where(:status.exists => false)
+              end
+
+              def status_log
+                where(:status.exists => true)
+              end
+            end
+
+            # def destroy
+            #   # noinspection RubyResolve
+            #   self.logs.each { |log| log.destroy }
+            # end
+
+            set_callback(:destroy, :before) do |document|
+              # noinspection RubyResolve
+              document.logs.each { |log| log.destroy! }
+            end
 
             field :summary, type: Hash, default: -> { Hash.new }
           end
@@ -36,6 +53,35 @@ module Libis
         end
 
         alias :<< :add_item
+
+        def log_history
+          # noinspection RubyResolve
+          self.logs.log_history.all || []
+        end
+
+        def status_log
+          # noinspection RubyResolve
+          self.logs.status_log.all || []
+        end
+
+        protected
+
+        def add_log_entry(msg)
+          # noinspection RubyResolve
+          self.logs.build(msg)
+        end
+
+        def add_status_log(message, tasklist = nil)
+          # noinspection RubyResolve
+          self.logs.build(
+              task: (tasklist.join('/') rescue nil),
+              status: message
+          )
+        end
+
+        def status_label(status_entry)
+          "#{status_entry[:task].split('/').last rescue nil}#{status_entry[:status] rescue nil}"
+        end
 
       end
 

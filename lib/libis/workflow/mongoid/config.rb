@@ -19,6 +19,7 @@ module Libis
 
       Config.send(:define_method, :database_connect) do |config_file = './mongoid.yml', environment = nil|
         ::Mongoid.load! config_file, environment
+        ::Mongo::Logger.logger.level = Logger::ERROR
       end
 
     end

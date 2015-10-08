@@ -2,6 +2,7 @@
 
 require 'libis/workflow/base/workflow'
 require 'libis/workflow/mongoid/base'
+require 'libis/tools/config_file'
 
 module Libis
   module Workflow
@@ -25,6 +26,15 @@ module Libis
             def klass.run_class(run_klass)
               has_many :workflow_runs, inverse_of: :workflow, class_name: run_klass.to_s,
                        dependent: :destroy, autosave: true, order: :created_at.asc
+            end
+
+            def klass.load(file_or_hash)
+              config = Libis::Tools::ConfigFile.new
+              config << file_or_hash
+              return nil if config.empty?
+              workflow = self.new
+              workflow.configure(config.to_h)
+              workflow
             end
 
             def create_run_object

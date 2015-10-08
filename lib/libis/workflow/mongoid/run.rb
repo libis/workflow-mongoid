@@ -18,13 +18,18 @@ module Libis
 
             store_in collection: 'workflow_runs'
 
-            attr_accessor :tasks
-
             field :start_date, type: Time, default: -> { Time.now }
+
+            # def destroy
+            #   self.items.each { |item| item.destroy }
+            #   FileUtils.rmtree(work_dir) if Dir.exist?(work_dir)
+            #   super
+            # end
 
             set_callback(:destroy, :before) do |document|
               wd = document.work_dir
               FileUtils.rmtree wd if Dir.exist? wd
+              document.items.each { |item| item.destroy! }
             end
 
             index start_date: 1
@@ -35,7 +40,7 @@ module Libis
 
             def klass.item_class(item_klass)
               has_many :items, inverse_of: :run, class_name: item_klass.to_s,
-                       dependent: :destroy, autosave: true, order: :created_at.asc
+                       dependent: :destroy, autosave: true, order: :c_at.asc
             end
           end
         end
