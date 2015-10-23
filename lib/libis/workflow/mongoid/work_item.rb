@@ -33,15 +33,15 @@ module Libis
         end
 
         def get_parent
-          self[:parent] || self[:run]
+          self.parent || self.run
         end
 
         def get_run
-          self[:run] || self[:parent].get_run
+          self.run || self.parent && self.parent.get_run || nil
         end
 
         def get_root
-          self[:parent].get_root rescue self
+          self.parent && self.parent.get_root || self
         end
 
       end
