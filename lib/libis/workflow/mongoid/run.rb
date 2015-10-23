@@ -20,15 +20,11 @@ module Libis
 
             field :start_date, type: Time, default: -> { Time.now }
 
-            # def destroy
-            #   self.items.each { |item| item.destroy }
-            #   FileUtils.rmtree(work_dir) if Dir.exist?(work_dir)
-            #   super
-            # end
-
             set_callback(:destroy, :before) do |document|
               wd = document.work_dir
-              FileUtils.rmtree wd if Dir.exist? wd
+              FileUtils.rmtree wd if wd && !wd.blank? && Dir.exist? wd
+              id = document.properties[:ingest_dir]
+              FileUtils.rmtree id if id && !id.blank? && Dir.exist?(id)
               document.items.each { |item| item.destroy! }
             end
 
