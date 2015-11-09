@@ -6,6 +6,7 @@ require 'stringio'
 require 'libis-workflow-mongoid'
 
 require_relative 'spec_helper'
+require_relative 'test_job'
 require_relative 'test_workflow'
 require_relative 'items'
 
@@ -53,16 +54,28 @@ describe 'TestWorkflow' do
             checksum_type: {default: 'SHA1', propagate_to: 'ProcessFiles/ChecksumTester'}
         }
     )
-    # noinspection RubyResolve
-    @workflow.workflow_runs.each { |run| run.destroy! }
     @workflow.save
-    @run = @workflow.run(dirname: dirname, checksum_type: 'SHA256')
+
+    @job = TestJob.find_or_initialize_by(name: 'TestJob')
+    @job.configure(
+            name: 'TestJob',
+            description: 'Job for testing',
+            workflow: @workflow,
+            run_object: 'TestRun',
+            input: {dirname: dirname, checksum_type: 'SHA256'},
+    )
+
+    # noinspection RubyResolve
+    @job.runs.each { |run| run.destroy! }
+    @job.save
+    @run = @job.execute
 
   end
 
   def dirname; @dirname; end
   def logoutput; @logoutput; end
   def workflow; @workflow; end
+  def job; @job; end
   def run; @run; end
 
   it 'should contain three tasks' do
@@ -153,11 +166,11 @@ STR
 
   # noinspection RubyResolve
   it 'find run' do
-    wf = TestWorkflow.first
-    expect(wf).to eq workflow
-    expect(workflow.workflow_runs.all.count).to eq 1
-    wf_run = workflow.workflow_runs.all.first
-    expect(wf_run).to eq run
+    my_job = TestJob.first
+    expect(my_job).to eq job
+    expect(my_job.runs.all.count).to eq 1
+    my_run = my_job.runs.all.first
+    expect(my_run).to eq run
   end
 
   # noinspection RubyResolve

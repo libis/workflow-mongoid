@@ -30,8 +30,8 @@ module Libis
 
             index start_date: 1
 
-            def klass.workflow_class(wf_klass)
-              belongs_to :workflow, inverse_of: :workflow_runs, class_name: wf_klass.to_s
+            def klass.job_class(job_klass)
+              belongs_to :job, inverse_of: :runs, class_name: job_klass.to_s
             end
 
             def klass.item_class(item_klass)
@@ -41,11 +41,10 @@ module Libis
           end
         end
 
-        def run(opts = {})
+        def run
           self.tasks = []
           self.items = []
-          # noinspection RubySuperCallWithoutSuperclassInspection
-          super opts
+          super
         end
 
         def restart(taskname)

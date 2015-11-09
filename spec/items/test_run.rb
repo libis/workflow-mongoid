@@ -5,7 +5,7 @@ class TestRun
   include ::Libis::Workflow::Mongoid::Run
 
   item_class 'TestItem'
-  workflow_class 'TestWorkflow'
+  job_class 'TestJob'
 
   def name; 'TestRun'; end
 

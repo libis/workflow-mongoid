@@ -23,9 +23,9 @@ module Libis
 
             index({name: 1}, {unique: 1})
 
-            def klass.run_class(run_klass)
-              has_many :workflow_runs, inverse_of: :workflow, class_name: run_klass.to_s,
-                       dependent: :destroy, autosave: true, order: :created_at.asc
+            def klass.job_class(job_klass)
+              has_many :jobs, inverse_of: :workflow, class_name: job_klass.to_s,
+                       dependent: :destroy, autosave: true, order: :c_at.asc
             end
 
             def klass.load(file_or_hash)
@@ -35,19 +35,6 @@ module Libis
               workflow = self.new
               workflow.configure(config.to_h)
               workflow
-            end
-
-            def create_run_object
-              # noinspection RubyResolve
-              self.workflow_runs.build
-            end
-
-            def restart(id, task = nil)
-              # noinspection RubyResolve
-              run_object = self.workflow_runs.select { |run| run.id == id }
-              raise WorkflowError, "Run #{id} not found" unless run_object
-              run_object.restart task
-              run_object
             end
 
           end

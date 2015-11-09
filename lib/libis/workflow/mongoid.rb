@@ -11,6 +11,7 @@ module Libis
       autoload :Base, 'libis/workflow/mongoid/base'
       autoload :Config, 'libis/workflow/mongoid/config'
       autoload :LogEntry, 'libis/workflow/mongoid/log_entry'
+      autoload :Job, 'libis/workflow/mongoid/job'
       autoload :Run, 'libis/workflow/mongoid/run'
       autoload :WorkItem, 'libis/workflow/mongoid/work_item'
       autoload :WorkItemBase, 'libis/workflow/mongoid/work_item_base'
