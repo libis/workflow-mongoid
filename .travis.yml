@@ -25,6 +25,8 @@ matrix:
       jdk: oraclejdk7
     - rvm: ruby-head
       jdk: oraclejdk8
+  allow_failures:
+    - rvm: ruby-head
 branches:
   only:
       - master
