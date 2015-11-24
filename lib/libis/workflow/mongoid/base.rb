@@ -4,6 +4,8 @@ require 'mongoid/document'
 require 'mongoid_indifferent_access'
 require_relative 'sequence'
 
+require 'active_support/core_ext/object/deep_dup'
+
 module Libis
   module Workflow
     module Mongoid
@@ -26,6 +28,17 @@ module Libis
           new_obj = self.class.new
           new_obj.copy_attributes(self)
         end
+
+        def info
+          self.attributes.deep_dup.reject { |k,v| v.blank? || volatile_attributes.include?(k) }.to_hash
+        end
+
+        protected
+
+        def volatile_attributes
+          %w'_id c_at'
+        end
+        private
 
         def copy_attributes(other)
           self.set(
