@@ -3,6 +3,7 @@
 require 'libis/workflow/base/workflow'
 require 'libis/workflow/mongoid/base'
 require 'libis/tools/config_file'
+require 'libis/tools/extend/hash'
 
 module Libis
   module Workflow
@@ -33,7 +34,7 @@ module Libis
               config << file_or_hash
               return nil if config.empty?
               workflow = self.new
-              workflow.configure(config.to_h)
+              workflow.configure(config.to_hash.key_strings_to_symbols(recursive: true))
               workflow
             end
 
