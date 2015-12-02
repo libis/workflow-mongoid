@@ -24,8 +24,6 @@ module Libis
               document.items.each { |item| item.destroy! }
               wd = document.work_dir
               FileUtils.rmtree wd if wd && !wd.blank? && Dir.exist?(wd)
-              id = document.properties[:ingest_dir]
-              FileUtils.rmtree id if id && !id.blank? && Dir.exist?(id)
             end
 
             index start_date: 1
