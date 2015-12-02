@@ -88,7 +88,7 @@ describe 'TestWorkflow' do
 
   it 'should camelize the workitem name' do
 
-    expect(run.options[:dirname]).to eq dirname
+    expect(run.options['CollectFiles'][:location]).to eq dirname
     expect(run.items.count).to eq 1
     expect(run.items.first.class).to eq TestDirItem
     expect(run.items.first.count).to eq 4
