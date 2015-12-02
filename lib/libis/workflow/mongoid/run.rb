@@ -21,7 +21,7 @@ module Libis
             field :start_date, type: Time, default: -> { Time.now }
 
             set_callback(:destroy, :before) do |document|
-              document.items.each { |item| item.destroy! }
+              document.items.each { |item| item.destroy }
               wd = document.work_dir
               FileUtils.rmtree wd if wd && !wd.blank? && Dir.exist?(wd)
             end
