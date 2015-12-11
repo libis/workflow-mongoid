@@ -68,7 +68,7 @@ module Libis
         end
 
         def item_count
-          self.items.size
+          self.count
         end
 
         def log_history
