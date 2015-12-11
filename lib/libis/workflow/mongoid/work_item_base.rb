@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'libis-workflow'
+require_relative 'dynamic'
 
 module Libis
   module Workflow
@@ -7,15 +8,31 @@ module Libis
 
       module WorkItemBase
 
+        class Options
+          include Libis::Workflow::Mongoid::Dynamic
+          embedded_in :work_item, class_name: Libis::Workflow::Mongoid::WorkItemBase.to_s
+        end
+
+        class Properties
+          include Libis::Workflow::Mongoid::Dynamic
+          embedded_in :work_item, class_name: Libis::Workflow::Mongoid::WorkItemBase.to_s
+        end
+
+        class Summary
+          include Libis::Workflow::Mongoid::Dynamic
+          embedded_in :work_item, class_name: Libis::Workflow::Mongoid::WorkItemBase.to_s
+        end
+
         def self.included(klass)
           klass.class_eval do
-            include ::Libis::Workflow::Base::WorkItem
+            include Libis::Workflow::Base::WorkItem
             include Libis::Workflow::Mongoid::Base
 
-            field :options, type: Hash, default: -> { Hash.new }
-            field :properties, type: Hash, default: -> { Hash.new }
+            embeds_one :options, class_name: Libis::Workflow::Mongoid::WorkItemBase::Options.to_s
+            embeds_one :properties, class_name: Libis::Workflow::Mongoid::WorkItemBase::Properties.to_s
+            embeds_one :summary, class_name: Libis::Workflow::Mongoid::WorkItemBase::Summary.to_s
 
-            has_many :logs, as: :logger, class_name: 'Libis::Workflow::Mongoid::LogEntry',
+            has_many :logs, as: :logger, class_name: Libis::Workflow::Mongoid::LogEntry.to_s,
                      dependent: :destroy, autosave: true, order: :_id.asc do
               def log_history
                 where(:status.exists => false)
@@ -36,9 +53,18 @@ module Libis
               document.logs.each { |log| log.destroy! }
             end
 
-            field :summary, type: Hash, default: -> { Hash.new }
+            set_callback(:initialize, :after) do |document|
+              document.options = {}
+              document.properties = {}
+              document.summary = {}
+            end
+
           end
 
+        end
+
+        def get_items
+          self.items.to_a
         end
 
         def item_count

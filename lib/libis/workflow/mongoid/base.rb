@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'mongoid'
 require 'mongoid/document'
-require 'mongoid_indifferent_access'
+# require 'mongoid_indifferent_access'
 require_relative 'sequence'
 
 require 'active_support/core_ext/object/deep_dup'
@@ -16,7 +16,7 @@ module Libis
           klass.class_eval do
             include ::Mongoid::Document
             include ::Mongoid::Timestamps::Created::Short
-            include ::Mongoid::Extensions::Hash::IndifferentAccess
+            # include ::Mongoid::Extensions::Hash::IndifferentAccess
             include ::Libis::Workflow::Mongoid::Sequence
             field :_id, type: Integer, overwrite: true
             sequence :_id

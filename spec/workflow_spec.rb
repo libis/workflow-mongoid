@@ -91,8 +91,8 @@ describe 'TestWorkflow' do
     expect(run.options['CollectFiles'][:location]).to eq dirname
     expect(run.items.count).to eq 1
     expect(run.items.first.class).to eq TestDirItem
-    expect(run.items.first.count).to eq 4
-    expect(run.items.first.first.class).to eq TestFileItem
+    expect(run.items.first.items.count).to eq 4
+    expect(run.items.first.items.first.class).to eq TestFileItem
 
     run.items.first.each_with_index do |x, i|
       expect(x.name).to eq %w'TestDirItem.rb TestFileItem.rb TestItem.rb TestRun.rb'[i]
