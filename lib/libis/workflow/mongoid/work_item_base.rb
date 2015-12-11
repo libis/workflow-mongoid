@@ -64,7 +64,7 @@ module Libis
         end
 
         def get_items
-          self.items.all
+          self.items.to_a
         end
 
         def item_count

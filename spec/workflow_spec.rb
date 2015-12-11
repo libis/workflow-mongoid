@@ -91,7 +91,7 @@ describe 'TestWorkflow' do
     expect(run.options['CollectFiles'][:location]).to eq dirname
     expect(run.items.count).to eq 1
     expect(run.items.first.class).to eq TestDirItem
-    expect(run.items.first.items.count).to eq 4
+    expect(run.items.first.count).to eq 4
     expect(run.items.first.items.first.class).to eq TestFileItem
 
     run.items.first.each_with_index do |x, i|
@@ -101,10 +101,6 @@ describe 'TestWorkflow' do
 
   it 'should return expected debug output' do
 
-    puts logoutput.string.lines
-    run.items.first.items.each { |item| puts item.name }
-    run.items.first.each { |item| puts item.name }
-    puts "#{run.items.first.items.count} - #{run.items.first.count} items"
     expect(run.summary[:DEBUG]).to eq 23
     expect(run.log_history.count).to eq 8
     expect(run.status_log.count).to eq 8
