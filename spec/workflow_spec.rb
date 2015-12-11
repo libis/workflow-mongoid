@@ -102,6 +102,7 @@ describe 'TestWorkflow' do
   it 'should return expected debug output' do
 
     puts logoutput.string.lines
+    run.items.first.items.each { |item| puts item.name }
     run.items.first.each { |item| puts item.name }
     puts "#{run.items.first.items.count} - #{run.items.first.count} items"
     expect(run.summary[:DEBUG]).to eq 23

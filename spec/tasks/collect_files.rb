@@ -34,15 +34,14 @@ class CollectFiles < ::Libis::Workflow::Task
   end
 
   def add_item(item, file)
-    child = if File.file?(file)
-              TestFileItem.new
-            elsif File.directory?(file)
-              TestDirItem.new
-            else
-              error 'Bad file type encountered: %s', file
-              nil
-            end
-    return unless child
+    if File.file?(file)
+      child = TestFileItem.new
+    elsif File.directory?(file)
+      child = TestDirItem.new
+    else
+      error 'Bad file type encountered: %s', file
+      return
+    end
     child.filename = file
     item << child
   end
