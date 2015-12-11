@@ -103,6 +103,7 @@ describe 'TestWorkflow' do
 
     puts logoutput.string.lines
     run.items.first.each { |item| puts item.name }
+    puts "#{run.items.first.items.count} - #{run.items.first.count} items"
     expect(run.summary[:DEBUG]).to eq 23
     expect(run.log_history.count).to eq 8
     expect(run.status_log.count).to eq 8
