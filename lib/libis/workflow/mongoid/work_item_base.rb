@@ -45,15 +45,6 @@ module Libis
           self.items.size
         end
 
-        def add_item(item)
-          return self unless item and item.is_a? Libis::Workflow::Mongoid::WorkItem
-          self.items << item
-          self.save!
-          self
-        end
-
-        alias :<< :add_item
-
         def log_history
           # noinspection RubyResolve
           self.logs.log_history.all || []
@@ -71,12 +62,9 @@ module Libis
           self.logs.build(msg)
         end
 
-        def add_status_log(message, task = nil)
+        def add_status_log(info)
           # noinspection RubyResolve
-          self.logs.build(
-              task: task,
-              status: message
-          )
+          self.logs.build(info)
         end
 
       end

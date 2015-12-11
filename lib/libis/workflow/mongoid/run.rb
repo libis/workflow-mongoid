@@ -42,21 +42,26 @@ module Libis
         def run
           self.tasks = []
           self.items = []
+          # noinspection RubySuperCallWithoutSuperclassInspection
           super
         end
 
-        def restart(taskname)
-          self.tasks = []
-          self.tasks = self.workflow.tasks(self)
-          configure_tasks self.options
-          self.status = :RESTARTED
-          self.tasks.each do |task|
-            next if self.status == :RESTARTED && task.name != taskname
-            task.run self
-          end
+        # Add a child work item
+        #
+        # @param [Libis::Workflow::Mongoid::WorkItem] item to be added to the child list :items
+        def add_item(item)
+          # noinspection RubyResolve
+          item.run = self
+          super
         end
 
+        alias_method :<<, :add_item
+
         def parent
+          nil
+        end
+
+        def parent=(_)
           nil
         end
 
