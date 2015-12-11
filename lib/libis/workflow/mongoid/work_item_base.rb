@@ -71,16 +71,12 @@ module Libis
           self.logs.build(msg)
         end
 
-        def add_status_log(message, tasklist = nil)
+        def add_status_log(message, task = nil)
           # noinspection RubyResolve
           self.logs.build(
-              task: (tasklist.join('/') rescue nil),
+              task: task,
               status: message
           )
-        end
-
-        def status_label(status_entry)
-          "#{status_entry[:task].split('/').last rescue nil}#{status_entry[:status] rescue nil}"
         end
 
       end
