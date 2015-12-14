@@ -92,7 +92,7 @@ describe 'TestWorkflow' do
 
     def print_item(item, indent = 0)
       puts "#{' ' * indent * 2} - #{item.name}"
-      item.items.get_items.each do |i|
+      item.get_items.each do |i|
         print_item(i, indent + 1)
       end
     end
