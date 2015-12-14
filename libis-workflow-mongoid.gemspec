@@ -5,33 +5,35 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'libis/workflow/mongoid/version'
 
-Gem::Specification.new do |gem|
-  gem.name = 'libis-workflow-mongoid'
-  gem.version = ::Libis::Workflow::Mongoid::VERSION
-  gem.date = Date.today.to_s
+Gem::Specification.new do |spec|
+  spec.name = 'libis-workflow-mongoid'
+  spec.version = ::Libis::Workflow::Mongoid::VERSION
+  spec.date = Date.today.to_s
 
-  gem.summary = %q{Mongoid persistence for the LIBIS Workflow framework.}
-  gem.description = %q{Class implementations that use Mongoid storage for the LIBIS Workflow framework.}
+  spec.summary = %q{Mongoid persistence for the LIBIS Workflow framework.}
+  spec.description = %q{Class implementations that use Mongoid storage for the LIBIS Workflow framework.}
 
-  gem.author = 'Kris Dekeyser'
-  gem.email = 'kris.dekeyser@libis.be'
-  gem.homepage = 'https://github.com/libis/workflow-mongoid'
-  gem.license = 'MIT'
+  spec.author = 'Kris Dekeyser'
+  spec.email = 'kris.dekeyser@libis.be'
+  spec.homepage = 'https://github.com/libis/workflow-mongoid'
+  spec.license = 'MIT'
 
-  gem.files = `git ls-files -z`.split("\0")
-  gem.executables = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
-  gem.test_files = gem.files.grep(%r{^(test|spec|features)/})
+  spec.platform = Gem::Platform::JAVA if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
 
-  gem.require_paths = ['lib']
+  spec.files = `git ls-files -z`.split("\0")
+  spec.executables = spec.files.grep(%r{^bin/}).map { |f| File.basename(f) }
+  spec.test_files = spec.files.grep(%r{^(test|spec|features)/})
 
-  gem.add_runtime_dependency 'libis-workflow', '~> 2.0.beta'
+  spec.require_paths = ['lib']
 
-  gem.add_runtime_dependency 'mongoid', '~> 5.0'
-  gem.add_runtime_dependency 'sidekiq'
+  spec.add_runtime_dependency 'libis-workflow', '~> 2.0.beta'
 
-  gem.add_development_dependency 'bundler', '~> 1.6'
-  gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'rspec'
-  gem.add_development_dependency 'coveralls'
+  spec.add_runtime_dependency 'mongoid', '~> 5.0'
+  spec.add_runtime_dependency 'sidekiq'
+
+  spec.add_development_dependency 'bundler', '~> 1.6'
+  spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'coveralls'
 
 end
