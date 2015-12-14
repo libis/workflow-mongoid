@@ -95,10 +95,10 @@ describe 'TestWorkflow' do
     expect(run.first.count).to eq 4
     expect(run.first.first.class).to eq TestFileItem
 
-    expect(run.items.count).to eq 1
-    expect(run.items.first.class).to eq TestDirItem
-    expect(run.items.first.count).to eq 4
-    expect(run.items.first.items.first.class).to eq TestFileItem
+    expect(run.get_items.count).to eq 1
+    expect(run.get_items.first.class).to eq TestDirItem
+    expect(run.get_items.first.count).to eq 4
+    expect(run.get_items.first.get_items.first.class).to eq TestFileItem
 
     run.items.first.each_with_index do |x, i|
       expect(x.name).to eq %w'TestDirItem.rb TestFileItem.rb TestItem.rb TestRun.rb'[i]
