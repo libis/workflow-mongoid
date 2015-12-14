@@ -63,13 +63,20 @@ module Libis
 
         end
 
+        def each
+          self.items.each { |item| yield item }
+        end
+
         def get_items
           self.items.to_a
         end
 
         def item_count
-          self.count
+          self.items.count
         end
+
+        alias_method :count, :item_count
+        alias_method :size, :item_count
 
         def log_history
           # noinspection RubyResolve

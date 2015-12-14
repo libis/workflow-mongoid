@@ -60,7 +60,7 @@ class CollectFiles < ::Libis::Workflow::Task
     puts "Child name #{child}"
     item << child
     puts 'Child added to parent item'
-    puts "Now #{item.count} - #{item.items.count} subitems:"
+    puts "Now #{item.count} - #{item.items.count} - #{item.items.all.count} - #{item.items.to_a.count} subitems:"
     item.items.each do |i|
       puts " - #{i}"
     end
