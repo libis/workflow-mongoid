@@ -90,6 +90,14 @@ describe 'TestWorkflow' do
 
     expect(run.options['CollectFiles'][:location]).to eq dirname
 
+    def print_item(item, indent = 0)
+      puts "#{indent * 2 * ' '} - #{item.name}"
+      item.items.get_items.each do |i|
+        print_item(i, indent + 1)
+      end
+    end
+    print_item(run)
+
     expect(run.count).to eq 1
     expect(run.first.class).to eq TestDirItem
     expect(run.first.count).to eq 4
