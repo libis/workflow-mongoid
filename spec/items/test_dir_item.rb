@@ -2,9 +2,9 @@
 require 'libis/workflow'
 require_relative 'test_item'
 
-class TestDirItem
+class TestDirItem < TestItem
+
   include ::Libis::Workflow::Base::DirItem
-  include ::Libis::Workflow::Mongoid::WorkItemBase
 
   def name=(dir)
     raise RuntimeError, "'#{dir}' is not a directory" unless File.directory? dir

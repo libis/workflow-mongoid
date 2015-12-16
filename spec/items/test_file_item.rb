@@ -4,9 +4,9 @@ require 'libis-workflow'
 
 require_relative 'test_item'
 
-class TestFileItem
+class TestFileItem < TestItem
+
   include ::Libis::Workflow::Base::FileItem
-  include ::Libis::Workflow::Mongoid::WorkItemBase
 
   def filename=(file)
     raise RuntimeError, "'#{file}' is not a file" unless File.file? file
