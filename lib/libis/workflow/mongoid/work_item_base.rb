@@ -74,6 +74,16 @@ module Libis
           self.logs.status_log.all || []
         end
 
+        def add_item(item)
+          old_parent = item.parent
+          super
+          if old_parent
+            old_parent.items.delete(item)
+            old_parent.save!
+          end
+          self
+        end
+
         def get_items
           self.items.to_a
         end
