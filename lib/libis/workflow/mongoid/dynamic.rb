@@ -1,5 +1,6 @@
 require 'mongoid'
 require 'mongoid/document'
+require 'libis/workflow/mongoid/sequence'
 
 module Libis
   module Workflow
