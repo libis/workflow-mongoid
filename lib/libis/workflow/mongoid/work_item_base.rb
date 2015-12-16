@@ -64,10 +64,6 @@ module Libis
           end
         end
 
-        def each
-          self.items.each { |item| yield item }
-        end
-
         def log_history
           # noinspection RubyResolve
           self.logs.log_history.all || []
