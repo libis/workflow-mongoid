@@ -74,6 +74,10 @@ module Libis
           self.logs.status_log.all || []
         end
 
+        def get_items
+          self.items.to_a
+        end
+
         protected
 
         def add_log_entry(msg)
