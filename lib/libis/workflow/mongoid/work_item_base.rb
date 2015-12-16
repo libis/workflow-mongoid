@@ -75,13 +75,10 @@ module Libis
         end
 
         def add_item(item)
-          old_parent = item.parent
-          super
-          if old_parent
-            old_parent.items.delete(item)
-            old_parent.save!
+          if item.parent
+            item.parent = nil
           end
-          self
+          super
         end
 
         def get_items
