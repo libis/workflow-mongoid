@@ -10,23 +10,25 @@ module Libis
 
         class Options
           include Libis::Workflow::Mongoid::Dynamic
-          embedded_in :work_item, class_name: Libis::Workflow::Mongoid::WorkItemBase.to_s
+          embedded_in :work_item, class_name: 'Libis::Workflow::Mongoid::WorkItem'
         end
 
         class Properties
           include Libis::Workflow::Mongoid::Dynamic
-          embedded_in :work_item, class_name: Libis::Workflow::Mongoid::WorkItemBase.to_s
+          embedded_in :work_item, class_name: 'Libis::Workflow::Mongoid::WorkItem'
         end
 
         class Summary
           include Libis::Workflow::Mongoid::Dynamic
-          embedded_in :work_item, class_name: Libis::Workflow::Mongoid::WorkItemBase.to_s
+          embedded_in :work_item, class_name: 'Libis::Workflow::Mongoid::WorkItem'
         end
 
         def self.included(klass)
           klass.class_eval do
             include Libis::Workflow::Base::WorkItem
             include Libis::Workflow::Mongoid::Base
+
+            store_in collection: 'workflow_items'
 
             embeds_one :options, class_name: Libis::Workflow::Mongoid::WorkItemBase::Options.to_s
             embeds_one :properties, class_name: Libis::Workflow::Mongoid::WorkItemBase::Properties.to_s
@@ -43,17 +45,10 @@ module Libis
               end
             end
 
-            def klass.item_class(item_klass)
-              has_many :items, as: :parent, class_name: item_klass.to_s,
-                       dependent: :destroy, autosave: true, order: :c_at.asc
-            end
+            has_many :items, as: :parent, class_name: Libis::Workflow::Mongoid::WorkItem.to_s,
+                     dependent: :destroy, autosave: true, order: :c_at.asc
 
             belongs_to :parent, polymorphic: true
-
-            # def destroy
-            #   # noinspection RubyResolve
-            #   self.logs.each { |log| log.destroy }
-            # end
 
             set_callback(:destroy, :before) do |document|
               # noinspection RubyResolve
@@ -67,7 +62,6 @@ module Libis
             end
 
           end
-
         end
 
         def each

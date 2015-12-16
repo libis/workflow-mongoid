@@ -1,11 +1,7 @@
 # encoding: utf-8
 require 'libis-workflow-mongoid'
 
-class TestRun
-  include ::Libis::Workflow::Mongoid::Run
-
-  item_class 'TestItem'
-  job_class 'TestJob'
+class TestRun <::Libis::Workflow::Mongoid::Run
 
   def name; 'TestRun'; end
 

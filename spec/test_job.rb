@@ -2,8 +2,5 @@
 
 require 'libis/workflow/mongoid/job'
 
-class TestJob
-  include ::Libis::Workflow::Mongoid::Job
-  run_class 'TestRun'
-  workflow_class 'TestWorkflow'
+class TestJob < ::Libis::Workflow::Mongoid::Job
 end

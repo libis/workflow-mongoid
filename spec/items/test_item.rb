@@ -2,6 +2,5 @@
 
 require 'libis/workflow/mongoid/work_item'
 
-class TestItem
-  include Libis::Workflow::Mongoid::WorkItem
+class TestItem < Libis::Workflow::Mongoid::WorkItem
 end

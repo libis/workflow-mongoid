@@ -8,31 +8,24 @@ module Libis
   module Workflow
     module Mongoid
 
-      module Run
+      class Run
+
+        include ::Libis::Workflow::Base::Run
+        include ::Libis::Workflow::Mongoid::WorkItemBase
         # extend ActiveSupport::Concern
 
-        def self.included(klass)
-          klass.class_eval do
-            include ::Libis::Workflow::Base::Run
-            include ::Libis::Workflow::Mongoid::WorkItemBase
+        store_in collection: 'workflow_runs'
 
-            store_in collection: 'workflow_runs'
+        field :start_date, type: Time, default: -> { Time.now }
 
-            field :start_date, type: Time, default: -> { Time.now }
-
-            set_callback(:destroy, :before) do |document|
-              wd = document.work_dir
-              FileUtils.rmtree wd if wd && !wd.blank? && Dir.exist?(wd)
-            end
-
-            index start_date: 1
-
-            def klass.job_class(job_klass)
-              belongs_to :job, inverse_of: :runs, class_name: job_klass.to_s
-            end
-
-          end
+        set_callback(:destroy, :before) do |document|
+          wd = document.work_dir
+          FileUtils.rmtree wd if wd && !wd.blank? && Dir.exist?(wd)
         end
+
+        index start_date: 1
+
+        belongs_to :job, polymorphic: true
 
         def run
           self.tasks = []

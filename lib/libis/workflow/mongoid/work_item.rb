@@ -1,22 +1,15 @@
 # encoding: utf-8
-require 'libis/workflow/mongoid/work_item_base'
+require 'libis-workflow'
+require_relative 'dynamic'
 
 module Libis
   module Workflow
     module Mongoid
 
-      module WorkItem
+      class WorkItem
 
-        def self.included(klass)
-          klass.class_eval do
-            include Libis::Workflow::Mongoid::WorkItemBase
-
-            store_in collection: 'workflow_items'
-
-            item_class klass
-
-          end
-        end
+        include Libis::Workflow::Base::WorkItem
+        include Libis::Workflow::Mongoid::WorkItemBase
 
       end
 
