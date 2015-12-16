@@ -90,24 +90,18 @@ describe 'TestWorkflow' do
 
     expect(run.options['CollectFiles'][:location]).to eq dirname
 
-    def print_item(item, indent = 0)
-      puts "#{' ' * indent * 2} - #{item.name}"
-      item.get_items.each do |i|
-        print_item(i, indent + 1)
-      end
-    end
-    print_item(run)
-
+    expect(run.items.size).to eq 1
+    expect(run.items.count).to eq 1
+    expect(run.size).to eq 1
     expect(run.count).to eq 1
+    expect(run.items.first.class).to eq TestDirItem
     expect(run.first.class).to eq TestDirItem
+    expect(run.first.items.size).to eq 4
+    expect(run.first.items.count).to eq 4
+    expect(run.first.size).to eq 4
     expect(run.first.count).to eq 4
+    expect(run.first.items.first.class).to eq TestFileItem
     expect(run.first.first.class).to eq TestFileItem
-
-    # the following tests do not work on Travis. Tried for days to find out why, but I give up.
-    # expect(run.get_items.count).to eq 1
-    # expect(run.get_items.first.class).to eq TestDirItem
-    # expect(run.get_items.first.count).to eq 4
-    # expect(run.get_items.first.get_items.first.class).to eq TestFileItem
 
     run.items.first.each_with_index do |x, i|
       expect(x.name).to eq %w'TestDirItem.rb TestFileItem.rb TestItem.rb TestRun.rb'[i]

@@ -43,6 +43,13 @@ module Libis
               end
             end
 
+            def klass.item_class(item_klass)
+              has_many :items, as: :parent, class_name: item_klass.to_s,
+                       dependent: :destroy, autosave: true, order: :c_at.asc
+            end
+
+            belongs_to :parent, polymorphic: true
+
             # def destroy
             #   # noinspection RubyResolve
             #   self.logs.each { |log| log.destroy }
@@ -66,17 +73,6 @@ module Libis
         def each
           self.items.each { |item| yield item }
         end
-
-        def get_items
-          self.items.to_a
-        end
-
-        def item_count
-          self.items.count
-        end
-
-        alias_method :count, :item_count
-        alias_method :size, :item_count
 
         def log_history
           # noinspection RubyResolve
