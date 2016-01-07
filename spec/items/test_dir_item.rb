@@ -12,7 +12,7 @@ class TestDirItem < TestItem
   end
 
   def name
-    self.properties[:name] || super
+    self.properties['name'] || super
   end
 
 end

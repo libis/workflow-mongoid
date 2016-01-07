@@ -8,21 +8,6 @@ module Libis
 
       module WorkItemBase
 
-        class Options
-          include Libis::Workflow::Mongoid::Dynamic
-          embedded_in :work_item, class_name: 'Libis::Workflow::Mongoid::WorkItem'
-        end
-
-        class Properties
-          include Libis::Workflow::Mongoid::Dynamic
-          embedded_in :work_item, class_name: 'Libis::Workflow::Mongoid::WorkItem'
-        end
-
-        class Summary
-          include Libis::Workflow::Mongoid::Dynamic
-          embedded_in :work_item, class_name: 'Libis::Workflow::Mongoid::WorkItem'
-        end
-
         def self.included(klass)
           klass.class_eval do
             include Libis::Workflow::Base::WorkItem
@@ -30,9 +15,9 @@ module Libis
 
             store_in collection: 'workflow_items'
 
-            embeds_one :options, class_name: Libis::Workflow::Mongoid::WorkItemBase::Options.to_s
-            embeds_one :properties, class_name: Libis::Workflow::Mongoid::WorkItemBase::Properties.to_s
-            embeds_one :summary, class_name: Libis::Workflow::Mongoid::WorkItemBase::Summary.to_s
+            field :options, type: Hash, default: -> { Hash.new }
+            field :properties, type: Hash, default: -> { Hash.new }
+            field :summary, type: Hash, default: -> { Hash.new }
 
             has_many :logs, as: :logger, class_name: Libis::Workflow::Mongoid::LogEntry.to_s,
                      dependent: :destroy, autosave: true, order: :_id.asc do
@@ -53,12 +38,6 @@ module Libis
             set_callback(:destroy, :before) do |document|
               # noinspection RubyResolve
               document.logs.each { |log| log.destroy! }
-            end
-
-            set_callback(:initialize, :after) do |document|
-              document.options = {}
-              document.properties = {}
-              document.summary = {}
             end
 
           end

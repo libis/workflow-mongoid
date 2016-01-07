@@ -88,7 +88,8 @@ describe 'TestWorkflow' do
 
   it 'should camelize the workitem name' do
 
-    expect(run.options['CollectFiles'][:location]).to eq dirname
+    puts run.options
+    expect(run.options['CollectFiles']['location']).to eq dirname
 
     expect(run.items.size).to eq 1
     expect(run.items.count).to eq 1
@@ -110,13 +111,13 @@ describe 'TestWorkflow' do
 
   it 'should return expected debug output' do
 
-    expect(run.summary[:DEBUG]).to eq 23
+    expect(run.summary['DEBUG']).to eq 23
     expect(run.log_history.count).to eq 8
     expect(run.status_log.count).to eq 8
     item = run.items.first
     expect(item.log_history.count).to eq 15
     expect(item.status_log.count).to eq 6
-    expect(item.summary[:DEBUG]).to eq 15
+    expect(item.summary['DEBUG']).to eq 15
 
     sample_out = <<STR
 DEBUG -- CollectFiles - TestRun : Processing subitem (1/1): items
@@ -188,8 +189,8 @@ STR
     item = run.items.first
     expect(item.nil?).to eq false
     expect(item.is_a? TestDirItem).to eq true
-    expect(item.properties[:name]).to eq 'Items'
-    expect(item.properties[:ingest_failed]).to eq false
+    expect(item.properties['name']).to eq 'Items'
+    expect(item.properties['ingest_failed']).to eq false
   end
 
   it 'move item in relation' do
