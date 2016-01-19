@@ -1,10 +1,12 @@
 # encoding: utf-8
 require 'mongoid'
 require 'mongoid/document'
+require 'yaml'
+require 'libis/tools/extend/hash'
+
 # require 'mongoid_indifferent_access'
 require_relative 'sequence'
 
-require 'active_support/core_ext/object/deep_dup'
 
 module Libis
   module Workflow
@@ -30,7 +32,15 @@ module Libis
         end
 
         def info
-          self.attributes.deep_dup.reject { |k,v| v.blank? || volatile_attributes.include?(k) }.to_hash
+          result = self.attributes.reject { |k,v| v.blank? || volatile_attributes.include?(k) }
+          result = result.to_yaml.gsub(/!ruby\/hash:BSON::Document/,'')
+          # noinspection RubyResolve
+          result = YAML.load(result)
+          result.key_strings_to_symbols!(recursive: true)
+        end
+
+        def to_s
+          self.name || "#{self.class.name}_#{self.id}"
         end
 
         protected
