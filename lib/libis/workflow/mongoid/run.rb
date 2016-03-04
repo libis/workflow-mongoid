@@ -26,12 +26,17 @@ module Libis
         index start_date: 1
 
         belongs_to :job, polymorphic: true
+        embeds_one :log_config
 
         def run
           self.tasks = []
           self.items = []
           # noinspection RubySuperCallWithoutSuperclassInspection
           super
+        end
+
+        def logger
+          self.log_config.logger("#{self.name}.log") || ::Libis::Workflow::Mongoid::Config.logger
         end
 
       end

@@ -24,6 +24,11 @@ module Libis
         has_many :runs, as: :job, dependent: :destroy, autosave: true, order: :c_at.asc
 
         belongs_to :workflow, polymorphic: true
+        embeds_one :log_config
+
+        def logger
+          self.log_config.logger("#{self.name}.log") rescue nil
+        end
 
         # def create_run_object
         #   # noinspection RubyResolve

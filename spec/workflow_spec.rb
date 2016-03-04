@@ -120,29 +120,29 @@ describe 'TestWorkflow' do
     expect(item.summary['DEBUG']).to eq 15
 
     sample_out = <<STR
-DEBUG -- CollectFiles - TestRun : Processing subitem (1/1): items
-DEBUG -- CollectFiles - items : Processing subitem (1/4): test_dir_item.rb
-DEBUG -- CollectFiles - items : Processing subitem (2/4): test_file_item.rb
-DEBUG -- CollectFiles - items : Processing subitem (3/4): test_item.rb
-DEBUG -- CollectFiles - items : Processing subitem (4/4): test_run.rb
-DEBUG -- CollectFiles - items : 4 of 4 subitems passed
-DEBUG -- CollectFiles - TestRun : 1 of 1 subitems passed
-DEBUG -- ProcessFiles - TestRun : Running subtask (1/2): ChecksumTester
-DEBUG -- ProcessFiles/ChecksumTester - TestRun : Processing subitem (1/1): items
-DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (1/4): test_dir_item.rb
-DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (2/4): test_file_item.rb
-DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (3/4): test_item.rb
-DEBUG -- ProcessFiles/ChecksumTester - items : Processing subitem (4/4): test_run.rb
-DEBUG -- ProcessFiles/ChecksumTester - items : 4 of 4 subitems passed
-DEBUG -- ProcessFiles/ChecksumTester - TestRun : 1 of 1 subitems passed
-DEBUG -- ProcessFiles - TestRun : Running subtask (2/2): CamelizeName
-DEBUG -- ProcessFiles/CamelizeName - TestRun : Processing subitem (1/1): items
-DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (1/4): test_dir_item.rb
-DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (2/4): test_file_item.rb
-DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (3/4): test_item.rb
-DEBUG -- ProcessFiles/CamelizeName - Items : Processing subitem (4/4): test_run.rb
-DEBUG -- ProcessFiles/CamelizeName - Items : 4 of 4 subitems passed
-DEBUG -- ProcessFiles/CamelizeName - TestRun : 1 of 1 subitems passed
+CollectFiles - TestRun : Processing subitem (1/1): items
+CollectFiles - items : Processing subitem (1/4): test_dir_item.rb
+CollectFiles - items : Processing subitem (2/4): test_file_item.rb
+CollectFiles - items : Processing subitem (3/4): test_item.rb
+CollectFiles - items : Processing subitem (4/4): test_run.rb
+CollectFiles - items : 4 of 4 subitems passed
+CollectFiles - TestRun : 1 of 1 subitems passed
+ProcessFiles - TestRun : Running subtask (1/2): ChecksumTester
+ProcessFiles/ChecksumTester - TestRun : Processing subitem (1/1): items
+ProcessFiles/ChecksumTester - items : Processing subitem (1/4): test_dir_item.rb
+ProcessFiles/ChecksumTester - items : Processing subitem (2/4): test_file_item.rb
+ProcessFiles/ChecksumTester - items : Processing subitem (3/4): test_item.rb
+ProcessFiles/ChecksumTester - items : Processing subitem (4/4): test_run.rb
+ProcessFiles/ChecksumTester - items : 4 of 4 subitems passed
+ProcessFiles/ChecksumTester - TestRun : 1 of 1 subitems passed
+ProcessFiles - TestRun : Running subtask (2/2): CamelizeName
+ProcessFiles/CamelizeName - TestRun : Processing subitem (1/1): items
+ProcessFiles/CamelizeName - Items : Processing subitem (1/4): test_dir_item.rb
+ProcessFiles/CamelizeName - Items : Processing subitem (2/4): test_file_item.rb
+ProcessFiles/CamelizeName - Items : Processing subitem (3/4): test_item.rb
+ProcessFiles/CamelizeName - Items : Processing subitem (4/4): test_run.rb
+ProcessFiles/CamelizeName - Items : 4 of 4 subitems passed
+ProcessFiles/CamelizeName - TestRun : 1 of 1 subitems passed
 STR
     sample_out = sample_out.lines.to_a
     output = logoutput.string.lines

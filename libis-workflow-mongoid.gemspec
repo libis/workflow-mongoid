@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'libis-workflow', '~> 2.0.beta'
+  spec.add_runtime_dependency 'libis-workflow', '~> 2.0'
 
   spec.add_runtime_dependency 'mongoid', '~> 5.0'
 
