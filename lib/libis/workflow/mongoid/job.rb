@@ -18,16 +18,36 @@ module Libis
         field :description, type: String
         field :input, type: Hash, default: -> { Hash.new }
         field :run_object, type: String
+        field :log_to_file, type: Boolean, default: false
+        field :log_level, type: String, default: 'DEBUG'
+        field :log_age, type: String, default: 'daily'
+        field :log_keep, type: Integer, default: 5
 
         index({name: 1}, {unique: 1})
 
         has_many :runs, as: :job, dependent: :destroy, autosave: true, order: :c_at.asc
 
         belongs_to :workflow, polymorphic: true
-        embeds_one :log_config
 
         def logger
-          self.log_config.logger("#{self.name}.log") rescue nil
+          return ::Libis::Workflow::Mongoid::Config.logger unless self.log_to_file
+          logger = ::Logging::Repository[self.name]
+          return logger if logger
+          unless ::Logging::Appenders[self.name]
+            ::Logging::Appenders::RollingFile.new(
+                self.name,
+                filename: File.join(::Libis::Workflow::Mongoid::Config[:log_dir], "#{self.name}{.%Y%m%d}.log"),
+                layout: Config.get_log_formatter,
+                truncate: true,
+                age: self.log_age,
+                keep: self.log_keep,
+                roll_by: 'date',
+                level: self.log_level
+            )
+          end
+          logger = Config.logger(self.name, self.name)
+          logger.additive = false
+          logger
         end
 
         # def create_run_object

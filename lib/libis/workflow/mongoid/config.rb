@@ -22,6 +22,8 @@ module Libis
         ::Mongo::Logger.logger.level = Logger::ERROR
       end
 
+      Config[:log_dir] = '.'
+
     end
   end
 end

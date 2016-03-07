@@ -17,6 +17,7 @@ module Libis
         store_in collection: 'workflow_runs'
 
         field :start_date, type: Time, default: -> { Time.now }
+        field :log_to_file, type: Boolean, default: false
 
         set_callback(:destroy, :before) do |document|
           wd = document.work_dir
@@ -26,7 +27,7 @@ module Libis
         index start_date: 1
 
         belongs_to :job, polymorphic: true
-        embeds_one :log_config
+        embeds_one :log_config, as: :log_configurator
 
         def run
           self.tasks = []
@@ -36,7 +37,20 @@ module Libis
         end
 
         def logger
-          self.log_config.logger("#{self.name}.log") || ::Libis::Workflow::Mongoid::Config.logger
+          return ::Libis::Workflow::Mongoid::Config.logger unless self.log_to_file
+          logger = ::Logging::Repository[self.name]
+          return logger if logger
+          unless ::Logging::Appenders[self.name]
+            ::Logging::Appenders::File.new(
+                self.name,
+                filename: File.join(::Libis::Workflow::Mongoid::Config[:log_dir], "#{self.name}.log"),
+                layout: Config.get_log_formatter,
+                level: self.log_level
+            )
+          end
+          logger = Config.logger(self.name, self.name)
+          logger.additive = false
+          logger
         end
 
       end

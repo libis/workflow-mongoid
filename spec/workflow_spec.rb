@@ -14,19 +14,18 @@ $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 describe 'TestWorkflow' do
 
-  before(:context) do
-    @dirname = File.absolute_path(File.join(File.dirname(__FILE__), 'items'))
-    @logoutput = StringIO.new
+  dirname = File.absolute_path(File.join(File.dirname(__FILE__), 'items'))
+
+  before :each do
 
     # noinspection RubyResolve
     ::Libis::Workflow::Mongoid.configure do |cfg|
       cfg.itemdir = File.join(File.dirname(__FILE__), 'items')
       cfg.taskdir = File.join(File.dirname(__FILE__), 'tasks')
       cfg.workdir = File.join(File.dirname(__FILE__), 'work')
-      cfg.logger = Logger.new logoutput
-      cfg.set_log_formatter
-      cfg.logger.level = Logger::DEBUG
       cfg.database_connect 'mongoid.yml', :test
+      cfg.logger.appenders =
+          ::Logging::Appenders.string_io('StringIO', layout: ::Libis::Tools::Config.get_log_formatter)
     end
 
     TestWorkflow.create_indexes
@@ -34,8 +33,11 @@ describe 'TestWorkflow' do
     TestFileItem.create_indexes
     TestDirItem.create_indexes
 
-    @workflow = TestWorkflow.find_or_initialize_by(name: 'TestWorkflow')
-    @workflow.configure(
+  end
+
+  let(:workflow) {
+    wf = TestWorkflow.find_or_initialize_by(name: 'TestWorkflow')
+    wf.configure(
         name: 'TestWorkflow',
         description: 'Workflow for testing',
         tasks: [
@@ -44,8 +46,8 @@ describe 'TestWorkflow' do
                 name: 'ProcessFiles',
                 subitems: true,
                 tasks: [
-                    {class: 'ChecksumTester',  recursive: true},
-                    {class: 'CamelizeName',  recursive: true}
+                    {class: 'ChecksumTester', recursive: true},
+                    {class: 'CamelizeName', recursive: true}
                 ]
             }
         ],
@@ -54,29 +56,28 @@ describe 'TestWorkflow' do
             checksum_type: {default: 'SHA1', propagate_to: 'ProcessFiles/ChecksumTester'}
         }
     )
-    @workflow.save
-
-    @job = TestJob.find_or_initialize_by(name: 'TestJob')
-    @job.configure(
-            name: 'TestJob',
-            description: 'Job for testing',
-            workflow: @workflow,
-            run_object: 'TestRun',
-            input: {dirname: dirname, checksum_type: 'SHA256'},
+    wf.save
+    wf
+  }
+  let(:job) {
+    job = TestJob.find_or_initialize_by(name: 'TestJob')
+    job.configure(
+        name: 'TestJob',
+        description: 'Job for testing',
+        workflow: workflow,
+        run_object: 'TestRun',
+        input: {dirname: dirname, checksum_type: 'SHA256'},
     )
 
     # noinspection RubyResolve
-    @job.runs.each { |run| run.destroy! }
-    @job.save
-    @run = @job.execute
+    job.runs.each { |run| run.destroy! }
+    job.save
+    job
+  }
 
-  end
+  let(:run) { job.execute }
 
-  def dirname; @dirname; end
-  def logoutput; @logoutput; end
-  def workflow; @workflow; end
-  def job; @job; end
-  def run; @run; end
+  let(:logoutput) { ::Libis::Tools::Config.logger.appenders.first.sio }
 
   it 'should contain three tasks' do
 
@@ -88,7 +89,6 @@ describe 'TestWorkflow' do
 
   it 'should camelize the workitem name' do
 
-    puts run.options
     expect(run.options['CollectFiles']['location']).to eq dirname
 
     expect(run.items.size).to eq 1
@@ -177,6 +177,7 @@ STR
 
   # noinspection RubyResolve
   it 'find run' do
+    run
     my_job = TestJob.first
     expect(my_job).to eq job
     expect(my_job.runs.all.count).to eq 1
