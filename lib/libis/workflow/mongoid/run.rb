@@ -38,7 +38,9 @@ module Libis
         end
 
         def logger
-          return ::Libis::Workflow::Mongoid::Config.logger unless self.log_to_file
+          unless self.log_to_file
+            return self.job.logger
+          end
           logger = ::Logging::Repository[self.name]
           return logger if logger
           unless ::Logging::Appenders[self.name]

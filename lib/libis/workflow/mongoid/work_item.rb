@@ -1,6 +1,5 @@
 # encoding: utf-8
 require 'libis-workflow'
-require_relative 'dynamic'
 
 module Libis
   module Workflow

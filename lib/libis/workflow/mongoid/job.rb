@@ -19,6 +19,7 @@ module Libis
         field :input, type: Hash, default: -> { Hash.new }
         field :run_object, type: String
         field :log_to_file, type: Boolean, default: false
+        field :log_each_run, type: Boolean, default: false
         field :log_level, type: String, default: 'DEBUG'
         field :log_age, type: String, default: 'daily'
         field :log_keep, type: Integer, default: 5
@@ -37,7 +38,7 @@ module Libis
             ::Logging::Appenders::RollingFile.new(
                 self.name,
                 filename: File.join(::Libis::Workflow::Mongoid::Config[:log_dir], "#{self.name}{.%Y%m%d}.log"),
-                layout: Config.get_log_formatter,
+                layout: ::Libis::Workflow::Mongoid::Config.get_log_formatter,
                 truncate: true,
                 age: self.log_age,
                 keep: self.log_keep,
@@ -45,9 +46,20 @@ module Libis
                 level: self.log_level
             )
           end
-          logger = Config.logger(self.name, self.name)
+          logger = ::Libis::Workflow::Mongoid::Config.logger(self.name, self.name)
           logger.additive = false
           logger
+        end
+
+        # noinspection RubyStringKeysInHashInspection
+        def execute(opts = {})
+          if self.log_each_run
+            opts[:run_config] = {
+                'log_to_file=' => true,
+                'log_level=' => self.log_level
+            }
+          end
+          super opts
         end
 
         # def create_run_object
