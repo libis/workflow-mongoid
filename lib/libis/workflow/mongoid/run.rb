@@ -18,6 +18,7 @@ module Libis
 
         field :start_date, type: Time, default: -> { Time.now }
         field :log_to_file, type: Boolean, default: false
+        field :log_level, type: String, default: 'DEBUG'
 
         set_callback(:destroy, :before) do |document|
           wd = document.work_dir
@@ -44,11 +45,11 @@ module Libis
             ::Logging::Appenders::File.new(
                 self.name,
                 filename: File.join(::Libis::Workflow::Mongoid::Config[:log_dir], "#{self.name}.log"),
-                layout: Config.get_log_formatter,
+                layout: ::Libis::Workflow::Mongoid::Config.get_log_formatter,
                 level: self.log_level
             )
           end
-          logger = Config.logger(self.name, self.name)
+          logger = ::Libis::Workflow::Mongoid::Config.logger(self.name, self.name)
           logger.additive = false
           logger
         end
