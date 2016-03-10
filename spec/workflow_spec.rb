@@ -190,8 +190,8 @@ STR
     item = run.items.first
     expect(item.nil?).to eq false
     expect(item.is_a? TestDirItem).to eq true
-    expect(item.properties['name']).to eq 'Items'
-    expect(item.properties['ingest_failed']).to eq false
+    expect(item.properties[:name]).to eq 'Items'
+    expect(item.properties[:ingest_failed]).to eq false
   end
 
   it 'move item in relation' do

@@ -1,5 +1,4 @@
-# encoding: utf-8
-
+require 'map_with_indifferent_access'
 require 'libis/workflow/base/job'
 require 'libis/workflow/mongoid/base'
 
@@ -16,7 +15,7 @@ module Libis
 
         field :name, type: String
         field :description, type: String
-        field :input, type: Hash, default: -> { Hash.new }
+        field :_input, type: Hash, default: -> { Hash.new }
         field :run_object, type: String
         field :log_to_file, type: Boolean, default: false
         field :log_each_run, type: Boolean, default: false
@@ -29,6 +28,29 @@ module Libis
         has_many :runs, as: :job, dependent: :destroy, autosave: true, order: :c_at.asc
 
         belongs_to :workflow, polymorphic: true
+
+        def self.from_hash(hash)
+          self.create_from_hash(hash, [:name]) do |item, cfg|
+            item.workflow = Libis::Workflow::Mongoid.from_hash(name: cfg.delete(:workflow))
+          end
+        end
+
+        # def input
+        #   MapWithIndifferentAccess::Map.new(self.read_attribute(:_input))
+        # end
+        #
+        # def input=(hash)
+        #   self.write_attribute(:_input, hash)
+        #   self.input
+        # end
+
+        indifferent_hash :_input, :input
+
+        def to_hash
+          result = super
+          result[:input] = result.delete(:_input)
+          result
+        end
 
         def logger
           return ::Libis::Workflow::Mongoid::Config.logger unless self.log_to_file

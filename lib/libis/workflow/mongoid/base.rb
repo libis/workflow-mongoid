@@ -3,6 +3,7 @@ require 'mongoid'
 require 'mongoid/document'
 require 'yaml'
 require 'libis/tools/extend/hash'
+require 'map_with_indifferent_access'
 
 # require 'mongoid_indifferent_access'
 require_relative 'sequence'
@@ -15,6 +16,7 @@ module Libis
       module Base
 
         def self.included(klass)
+          klass.extend(ClassMethods)
           klass.class_eval do
             include ::Mongoid::Document
             include ::Mongoid::Timestamps::Created::Short
@@ -26,14 +28,50 @@ module Libis
           end
         end
 
+        module ClassMethods
+          def from_hash(hash)
+            self.create_from_hash(hash.cleanup, [:name])
+          end
+
+          def create_from_hash(hash, id_tags, &block)
+            hash = hash.key_strings_to_symbols
+            id_tags = id_tags.map(&:to_sym)
+            return nil unless id_tags.empty? || id_tags.any? { |k| hash.include?(k) }
+            tags = id_tags.inject({}) do |h, k|
+              v = hash.delete(k)
+              h[k] = v if v
+              h
+            end
+            item = tags.empty? ? self.new : self.find_or_initialize_by(tags)
+            block.call(item, hash) if block unless hash.empty?
+            item.assign_attributes(hash)
+            unless self.embedded?
+              item.save!
+            end
+            item
+          end
+
+          def indifferent_hash(field_name, method_name)
+            define_method method_name do
+              MapWithIndifferentAccess::Map.new(self.read_attribute(field_name))
+            end
+
+            define_method "#{method_name}=" do |value|
+              self.write_attribute(field_name, value)
+              self.send(method_name)
+            end
+          end
+
+        end
+
         def dup
           new_obj = self.class.new
           new_obj.copy_attributes(self)
         end
 
-        def info
-          result = self.attributes.reject { |k,v| v.blank? || volatile_attributes.include?(k) }
-          result = result.to_yaml.gsub(/!ruby\/hash:BSON::Document/,'')
+        def to_hash
+          result = self.attributes.reject { |k, v| v.blank? || volatile_attributes.include?(k) }
+          result = result.to_yaml.gsub(/!ruby\/hash:BSON::Document/, '')
           # noinspection RubyResolve
           result = YAML.load(result)
           result.key_strings_to_symbols!(recursive: true)
@@ -48,6 +86,7 @@ module Libis
         def volatile_attributes
           %w'_id c_at'
         end
+
         private
 
         def copy_attributes(other)

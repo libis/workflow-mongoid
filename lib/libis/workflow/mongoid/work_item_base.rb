@@ -1,4 +1,4 @@
-# encoding: utf-8
+require 'map_with_indifferent_access'
 require 'libis-workflow'
 
 module Libis
@@ -14,9 +14,9 @@ module Libis
 
             store_in collection: 'workflow_items'
 
-            field :options, type: Hash, default: -> { Hash.new }
-            field :properties, type: Hash, default: -> { Hash.new }
-            field :summary, type: Hash, default: -> { Hash.new }
+            field :_options, type: Hash, default: -> { Hash.new }
+            field :_properties, type: Hash, default: -> { Hash.new }
+            field :_summary, type: Hash, default: -> { Hash.new }
 
             has_many :logs, as: :logger, class_name: Libis::Workflow::Mongoid::LogEntry.to_s,
                      dependent: :destroy, autosave: true, order: :_id.asc do
@@ -39,7 +39,19 @@ module Libis
               document.logs.each { |log| log.destroy! }
             end
 
+            indifferent_hash :_options, :options
+            indifferent_hash :_properties, :properties
+            indifferent_hash :_summary, :summary
+
           end
+        end
+
+        def to_hash
+          result = super
+          result[:options] = result.delete(:_options)
+          result[:properties] = result.delete(:_properties)
+          result[:summary] = result.delete(:_summary)
+          result
         end
 
         def log_history

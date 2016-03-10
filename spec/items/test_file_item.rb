@@ -15,15 +15,15 @@ class TestFileItem < TestItem
   end
 
   def name
-    self.properties['name'] || super
+    self.properties[:name] || super
   end
 
   def filesize
-    properties['size']
+    properties[:size]
   end
 
   def fixity_check(checksum)
-    properties['checksum'] == checksum
+    properties[:checksum] == checksum
   end
 
 end
