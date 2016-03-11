@@ -58,6 +58,7 @@ module Libis
           end
           logger = ::Libis::Workflow::Mongoid::Config.logger(self.name, self.name)
           logger.additive = false
+          logger.level = self.log_level
           logger
         end
 
