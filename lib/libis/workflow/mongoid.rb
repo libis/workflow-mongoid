@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'libis-workflow'
 
 require_relative 'mongoid/version'
@@ -12,7 +10,6 @@ module Libis
       autoload :Config, 'libis/workflow/mongoid/config'
       autoload :LogEntry, 'libis/workflow/mongoid/log_entry'
       autoload :Job, 'libis/workflow/mongoid/job'
-      autoload :WorkItemBase, 'libis/workflow/mongoid/work_item_base'
       autoload :WorkItem, 'libis/workflow/mongoid/work_item'
       autoload :Run, 'libis/workflow/mongoid/run'
       autoload :Worker, 'libis/workflow/mongoid/worker'

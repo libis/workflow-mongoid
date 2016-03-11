@@ -1,20 +1,14 @@
-# encoding: utf-8
 require 'fileutils'
 
 require 'libis/workflow/base/run'
-require 'libis/workflow/mongoid/work_item_base'
 
 module Libis
   module Workflow
     module Mongoid
 
-      class Run
+      class Run < Libis::Workflow::Mongoid::WorkItem
 
         include ::Libis::Workflow::Base::Run
-        include ::Libis::Workflow::Mongoid::WorkItemBase
-        # extend ActiveSupport::Concern
-
-        store_in collection: 'workflow_runs'
 
         field :start_date, type: Time, default: -> { Time.now }
         field :log_to_file, type: Boolean, default: false
@@ -36,8 +30,6 @@ module Libis
 
         def run(action = :run)
           self.tasks = []
-          self.items = []
-          # noinspection RubySuperCallWithoutSuperclassInspection
           super action
         end
 

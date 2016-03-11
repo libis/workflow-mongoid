@@ -1,13 +1,10 @@
-# encoding: utf-8
 require 'mongoid'
 require 'mongoid/document'
 require 'yaml'
 require 'libis/tools/extend/hash'
 require 'map_with_indifferent_access'
 
-# require 'mongoid_indifferent_access'
 require_relative 'sequence'
-
 
 module Libis
   module Workflow
@@ -17,14 +14,17 @@ module Libis
 
         def self.included(klass)
           klass.extend(ClassMethods)
+
           klass.class_eval do
+
             include ::Mongoid::Document
             include ::Mongoid::Timestamps::Created::Short
-            # include ::Mongoid::Extensions::Hash::IndifferentAccess
             include ::Libis::Workflow::Mongoid::Sequence
+
             field :_id, type: Integer, overwrite: true
             sequence :_id
             index c_at: 1
+
           end
         end
 
