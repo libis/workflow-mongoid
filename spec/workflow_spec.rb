@@ -38,40 +38,40 @@ describe 'TestWorkflow' do
   let(:workflow) {
     wf = TestWorkflow.find_or_initialize_by(name: 'TestWorkflow')
     wf.configure(
-        name: 'TestWorkflow',
-        description: 'Workflow for testing',
-        tasks: [
-            {class: 'CollectFiles', recursive: true},
+        'name' => 'TestWorkflow',
+        'description' => 'Workflow for testing',
+        'tasks' => [
+            {'class' => 'CollectFiles', 'recursive' => true},
             {
-                name: 'ProcessFiles',
-                subitems: true,
-                tasks: [
-                    {class: 'ChecksumTester', recursive: true},
-                    {class: 'CamelizeName', recursive: true}
+                'name' => 'ProcessFiles',
+                'subitems' => true,
+                'tasks' => [
+                    {'class' => 'ChecksumTester', 'recursive' => true},
+                    {'class' => 'CamelizeName', 'recursive' => true}
                 ]
             }
         ],
-        input: {
-            dirname: {default: '.', propagate_to: 'CollectFiles#location'},
-            checksum_type: {default: 'SHA1', propagate_to: 'ProcessFiles/ChecksumTester'}
+        'input' => {
+            'dirname' => {'default' => '.', 'propagate_to' => 'CollectFiles#location'},
+            'checksum_type' => {'default' => 'SHA1', 'propagate_to' => 'ProcessFiles/ChecksumTester'}
         }
     )
-    wf.save
+    wf.save!
     wf
   }
   let(:job) {
     job = TestJob.find_or_initialize_by(name: 'TestJob')
     job.configure(
-        name: 'TestJob',
-        description: 'Job for testing',
-        workflow: workflow,
-        run_object: 'TestRun',
-        input: {dirname: dirname, checksum_type: 'SHA256'},
+        'name' => 'TestJob',
+        'description' => 'Job for testing',
+        'workflow' => workflow,
+        'run_object' => 'TestRun',
+        'input' => {'dirname' => dirname, 'checksum_type' => 'SHA256'},
     )
 
     # noinspection RubyResolve
     job.runs.each { |run| run.destroy! }
-    job.save
+    job.save!
     job
   }
 
@@ -81,9 +81,9 @@ describe 'TestWorkflow' do
 
   it 'should contain three tasks' do
 
-    expect(workflow.config[:tasks].size).to eq 3
-    expect(workflow.config[:tasks].first[:class]).to eq 'CollectFiles'
-    expect(workflow.config[:tasks].last[:class]).to eq '::Libis::Workflow::Tasks::Analyzer'
+    expect(workflow.config['tasks'].size).to eq 3
+    expect(workflow.config['tasks'].first['class']).to eq 'CollectFiles'
+    expect(workflow.config['tasks'].last['class']).to eq '::Libis::Workflow::Tasks::Analyzer'
 
   end
 
@@ -162,17 +162,17 @@ STR
     expect(wf.description).to eq 'Workflow for testing'
     expect(wf.input.count).to eq 2
     expect(wf.input[:dirname][:default]).to eq '.'
-    expect(wf.config[:tasks].count).to eq 3
-    expect(wf.config[:tasks][0][:class]).to eq 'CollectFiles'
-    expect(wf.config[:tasks][0][:recursive]).to eq true
-    expect(wf.config[:tasks][1][:name]).to eq 'ProcessFiles'
-    expect(wf.config[:tasks][1][:subitems]).to eq true
-    expect(wf.config[:tasks][1][:tasks].count).to eq 2
-    expect(wf.config[:tasks][1][:tasks][0][:class]).to eq 'ChecksumTester'
-    expect(wf.config[:tasks][1][:tasks][0][:recursive]).to eq true
-    expect(wf.config[:tasks][1][:tasks][1][:class]).to eq 'CamelizeName'
-    expect(wf.config[:tasks][1][:tasks][1][:recursive]).to eq true
-    expect(wf.config[:tasks][2][:class]).to eq '::Libis::Workflow::Tasks::Analyzer'
+    expect(wf.config['tasks'].count).to eq 3
+    expect(wf.config['tasks'][0]['class']).to eq 'CollectFiles'
+    expect(wf.config['tasks'][0]['recursive']).to eq true
+    expect(wf.config['tasks'][1]['name']).to eq 'ProcessFiles'
+    expect(wf.config['tasks'][1]['subitems']).to eq true
+    expect(wf.config['tasks'][1]['tasks'].count).to eq 2
+    expect(wf.config['tasks'][1]['tasks'][0]['class']).to eq 'ChecksumTester'
+    expect(wf.config['tasks'][1]['tasks'][0]['recursive']).to eq true
+    expect(wf.config['tasks'][1]['tasks'][1]['class']).to eq 'CamelizeName'
+    expect(wf.config['tasks'][1]['tasks'][1]['recursive']).to eq true
+    expect(wf.config['tasks'][2]['class']).to eq '::Libis::Workflow::Tasks::Analyzer'
   end
 
   # noinspection RubyResolve
@@ -190,8 +190,8 @@ STR
     item = run.items.first
     expect(item.nil?).to eq false
     expect(item.is_a? TestDirItem).to eq true
-    expect(item.properties[:name]).to eq 'Items'
-    expect(item.properties[:ingest_failed]).to eq false
+    expect(item.properties['name']).to eq 'Items'
+    expect(item.properties['ingest_failed']).to eq false
   end
 
   it 'move item in relation' do

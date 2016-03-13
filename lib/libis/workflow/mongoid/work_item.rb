@@ -11,12 +11,12 @@ module Libis
 
         store_in collection: 'workflow_items'
 
-        field :_options, type: Hash, default: -> { Hash.new }
-        field :_properties, type: Hash, default: -> { Hash.new }
-        field :_summary, type: Hash, default: -> { Hash.new }
+        field :options, type: Hash, default: -> { Hash.new }
+        field :properties, type: Hash, default: -> { Hash.new }
+        field :summary, type: Hash, default: -> { Hash.new }
 
         has_many :logs, as: :logger, class_name: Libis::Workflow::Mongoid::LogEntry.to_s,
-                 dependent: :destroy, autosave: true, order: :_id.asc do
+                 dependent: :destroy, autosave: true, order: :c_at.asc do
           def log_history
             where(:status.exists => false)
           end
@@ -34,18 +34,6 @@ module Libis
         set_callback(:destroy, :before) do |document|
           # noinspection RubyResolve
           document.logs.each { |log| log.destroy! }
-        end
-
-        indifferent_hash :_options, :options
-        indifferent_hash :_properties, :properties
-        indifferent_hash :_summary, :summary
-
-        def to_hash
-          result = super
-          result[:options] = result.delete(:_options)
-          result[:properties] = result.delete(:_properties)
-          result[:summary] = result.delete(:_summary)
-          result
         end
 
         def log_history

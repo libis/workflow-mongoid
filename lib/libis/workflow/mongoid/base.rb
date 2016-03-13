@@ -2,7 +2,6 @@ require 'mongoid'
 require 'mongoid/document'
 require 'yaml'
 require 'libis/tools/extend/hash'
-require 'map_with_indifferent_access'
 
 require_relative 'sequence'
 
@@ -34,8 +33,8 @@ module Libis
           end
 
           def create_from_hash(hash, id_tags, &block)
-            hash = hash.key_strings_to_symbols
-            id_tags = id_tags.map(&:to_sym)
+            hash = hash.key_symbols_to_strings(recursive: true)
+            id_tags = id_tags.map(&:to_s)
             return nil unless id_tags.empty? || id_tags.any? { |k| hash.include?(k) }
             tags = id_tags.inject({}) do |h, k|
               v = hash.delete(k)
@@ -49,17 +48,6 @@ module Libis
               item.save!
             end
             item
-          end
-
-          def indifferent_hash(field_name, method_name)
-            define_method method_name do
-              MapWithIndifferentAccess::Map.new(self.read_attribute(field_name))
-            end
-
-            define_method "#{method_name}=" do |value|
-              self.write_attribute(field_name, value)
-              self.send(method_name)
-            end
           end
 
         end
