@@ -16,7 +16,7 @@ module Libis
         field :description, type: String
         field :input, type: Hash, default: -> { Hash.new }
         field :run_object, type: String
-        field :log_to_file, type: Boolean, default: false
+        field :log_to_file, type: Boolean, default: true
         field :log_each_run, type: Boolean, default: false
         field :log_level, type: String, default: 'DEBUG'
         field :log_age, type: String, default: 'daily'
