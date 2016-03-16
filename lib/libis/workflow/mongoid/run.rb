@@ -15,6 +15,12 @@ module Libis
         field :log_level, type: String, default: 'DEBUG'
         field :log_filename, type: String
 
+        index({start_date: 1}, {sparse: 1, name: 'by_start'})
+
+        belongs_to :job, polymorphic: true
+
+        index({job_id: 1, job_type: 1, start_date: 1}, {sparse:1, name: 'by_job'})
+
         set_callback(:destroy, :before) do |document|
           wd = document.work_dir
           FileUtils.rmtree wd if wd && !wd.blank? && Dir.exist?(wd)
@@ -22,11 +28,6 @@ module Libis
           log_file = document.log_filename
           FileUtils.rm(log_file) if log_file && !log_file.blank? && File.exist?(log_file)
         end
-
-        index start_date: 1
-
-        belongs_to :job, polymorphic: true
-        embeds_one :log_config, as: :log_configurator
 
         def run(action = :run)
           self.tasks = []

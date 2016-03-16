@@ -60,14 +60,24 @@ describe 'TestWorkflow' do
     wf
   }
   let(:job) {
-    job = TestJob.find_or_initialize_by(name: 'TestJob')
-    job.configure(
+    job = TestJob.from_hash(
         'name' => 'TestJob',
         'description' => 'Job for testing',
         'workflow' => workflow,
         'run_object' => 'TestRun',
         'input' => {'dirname' => dirname, 'checksum_type' => 'SHA256'},
+        'log_to_file' => false
     )
+
+    # job = TestJob.find_or_initialize_by(name: 'TestJob')
+    # job.configure(
+    #     'name' => 'TestJob',
+    #     'description' => 'Job for testing',
+    #     'workflow' => workflow,
+    #     'run_object' => 'TestRun',
+    #     'input' => {'dirname' => dirname, 'checksum_type' => 'SHA256'},
+    #     'log_to_file' => false
+    # )
 
     # noinspection RubyResolve
     job.runs.each { |run| run.destroy! }
@@ -183,6 +193,7 @@ STR
     expect(my_job.runs.all.count).to eq 1
     my_run = my_job.runs.all.first
     expect(my_run).to eq run
+    expect(my_run.status).to eq :DONE
   end
 
   # noinspection RubyResolve

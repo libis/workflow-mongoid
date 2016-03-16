@@ -15,14 +15,28 @@ module Libis
         field :properties, type: Hash, default: -> { Hash.new }
         field :summary, type: Hash, default: -> { Hash.new }
 
+        index({_id: 1, _type: 1}, {unique: true, name: 'by_id'})
+
         has_many :logs, as: :logger, class_name: Libis::Workflow::Mongoid::LogEntry.to_s,
-                 dependent: :destroy, autosave: true, order: :c_at.asc do
+                 dependent: :destroy, autosave: true do
           def log_history
-            where(:status.exists => false)
+            where(:status.exists => false).order(c_at: 1)
           end
 
-          def status_log
-            where(:status.exists => true)
+          def status_log(task = nil)
+            if task
+              where(:status.exists => true, task: task)
+            else
+              where(:status.exists => true)
+            end.order(c_at: 1)
+          end
+
+          def get_status(task = nil)
+            if task
+              where(:status.exists => true, task: task)
+            else
+              where(:status.exists => true)
+            end.order(c_at: -1).limit(1).first
           end
         end
 
@@ -30,6 +44,8 @@ module Libis
                  dependent: :destroy, autosave: true, order: :c_at.asc
 
         belongs_to :parent, polymorphic: true
+
+        index({parent_id: 1, parent_type: 1, c_at: 1}, {name: 'by_parent'})
 
         set_callback(:destroy, :before) do |document|
           # noinspection RubyResolve
@@ -58,6 +74,15 @@ module Libis
         end
 
         protected
+
+        # Get last known status entry for a given task
+        #
+        # In the Mongid storage, we retrieve the status log in date descending order, so we retrieve the first item.
+        # @param [String] task task name to check item status for
+        # @return [Hash] the status entry
+        def status_entry(task = nil)
+          self.logs.get_status(task)
+        end
 
         def add_log_entry(msg)
           # noinspection RubyResolve

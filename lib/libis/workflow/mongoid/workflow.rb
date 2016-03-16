@@ -18,9 +18,9 @@ module Libis
         field :description, type: String
         field :config, type: Hash, default: -> { Hash.new }
 
-        index({name: 1}, {unique: 1})
+        index({name: 1}, {unique: 1, name: 'by_name'})
 
-        has_many :jobs, as: :workflow, dependent: :destroy, autosave: true, order: :c_at.asc
+        has_many :jobs, as: :workflow, dependent: :restrict, autosave: true, order: :name.asc
 
         def self.from_hash(hash)
           self.create_from_hash(hash, [:name]) do |item, cfg|

@@ -22,21 +22,22 @@ module Libis
         field :log_age, type: String, default: 'daily'
         field :log_keep, type: Integer, default: 5
 
-        index({name: 1}, {unique: 1})
+        index({name: 1}, {unique: 1, name: 'by_name'})
 
         has_many :runs, as: :job, dependent: :destroy, autosave: true, order: :c_at.asc
-
         belongs_to :workflow, polymorphic: true
+
+        index({workflow_id: 1, workflow_type: 1, name: 1}, {name: 'by_workflow'})
 
         def self.from_hash(hash)
           self.create_from_hash(hash, [:name]) do |item, cfg|
-            item.workflow = Libis::Workflow::Mongoid.from_hash(name: cfg.delete('workflow'))
+            item.workflow = Libis::Workflow::Mongoid::Workflow.from_hash(name: cfg.delete('workflow'))
           end
         end
 
         def logger
           return ::Libis::Workflow::Mongoid::Config.logger unless self.log_to_file
-          logger = ::Logging::Repository[self.name]
+          logger = ::Logging::Repository.instance[self.name]
           return logger if logger
           unless ::Logging::Appenders[self.name]
             ::Logging::Appenders::RollingFile.new(
@@ -59,7 +60,7 @@ module Libis
         def execute(opts = {})
           if self.log_each_run
             opts['run_config'] = {
-                'log_to_file=' => true,
+                'log_to_file' => true,
                 'log_level=' => self.log_level
             }
           end

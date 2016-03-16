@@ -22,7 +22,7 @@ module Libis
 
             field :_id, type: Integer, overwrite: true
             sequence :_id
-            index c_at: 1
+            index({c_at: 1}, {name: 'by_created'})
 
           end
         end

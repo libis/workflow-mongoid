@@ -28,7 +28,6 @@ module Libis
 
             field :_id, type: Integer, overwrite: true
             sequence :_id
-            index _id: 1
 
           end
         end
