@@ -42,7 +42,7 @@ module Libis
           unless ::Logging::Appenders[self.name]
             ::Logging::Appenders::RollingFile.new(
                 self.name,
-                filename: File.join(::Libis::Workflow::Mongoid::Config[:log_dir], "#{self.name}{.%Y%m%d}.log"),
+                filename: File.join(::Libis::Workflow::Mongoid::Config[:log_dir], "#{self.name}.{{%Y%m%d}}.log"),
                 layout: ::Libis::Workflow::Mongoid::Config.get_log_formatter,
                 truncate: true,
                 age: self.log_age,
