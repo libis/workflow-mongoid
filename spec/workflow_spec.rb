@@ -66,7 +66,8 @@ describe 'TestWorkflow' do
         'workflow' => workflow,
         'run_object' => 'TestRun',
         'input' => {'dirname' => dirname, 'checksum_type' => 'SHA256'},
-        'log_to_file' => false
+        'log_to_file' => false,
+        'log_each_run' => false
     )
 
     # job = TestJob.find_or_initialize_by(name: 'TestJob')
