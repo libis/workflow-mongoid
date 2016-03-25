@@ -61,7 +61,7 @@ module Libis
           if self.log_each_run
             opts['run_config'] = {
                 'log_to_file' => true,
-                'log_level=' => self.log_level
+                'log_level' => self.log_level
             }
           end
           super opts
