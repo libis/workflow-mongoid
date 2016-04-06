@@ -122,8 +122,8 @@ describe 'TestWorkflow' do
 
   it 'should return expected debug output' do
 
-    expect(run.summary['DEBUG']).to eq 23
-    expect(run.log_history.count).to eq 8
+    expect(run.summary['DEBUG']).to eq 21
+    expect(run.log_history.count).to eq 9
     expect(run.status_log.count).to eq 8
     item = run.items.first
     expect(item.log_history.count).to eq 15
@@ -154,6 +154,7 @@ ProcessFiles/CamelizeName - Items : Processing subitem (3/4): test_item.rb
 ProcessFiles/CamelizeName - Items : Processing subitem (4/4): test_run.rb
 ProcessFiles/CamelizeName - Items : 4 of 4 subitems passed
 ProcessFiles/CamelizeName - TestRun : 1 of 1 subitems passed
+ INFO -- Analyzer - TestRun : Ingest finished
 STR
     sample_out = sample_out.lines.to_a
     output = logoutput.string.lines
