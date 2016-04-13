@@ -35,6 +35,8 @@ describe 'TestWorkflow' do
 
   end
 
+  let(:logoutput) { ::Libis::Workflow::Config.logger.appenders.first.sio }
+
   let(:workflow) {
     wf = TestWorkflow.find_or_initialize_by(name: 'TestWorkflow')
     wf.configure(
@@ -88,13 +90,11 @@ describe 'TestWorkflow' do
 
   let(:run) { job.execute }
 
-  let(:logoutput) { ::Libis::Tools::Config.logger.appenders.first.sio }
-
   it 'should contain three tasks' do
 
-    expect(workflow.config['tasks'].size).to eq 3
+    expect(workflow.config['tasks'].size).to eq 2
     expect(workflow.config['tasks'].first['class']).to eq 'CollectFiles'
-    expect(workflow.config['tasks'].last['class']).to eq '::Libis::Workflow::Tasks::Analyzer'
+    expect(workflow.config['tasks'].last['name']).to eq 'ProcessFiles'
 
   end
 
@@ -122,15 +122,11 @@ describe 'TestWorkflow' do
 
   it 'should return expected debug output' do
 
-    expect(run.summary['DEBUG']).to eq 21
-    expect(run.log_history.count).to eq 9
-    expect(run.status_log.count).to eq 8
-    item = run.items.first
-    expect(item.log_history.count).to eq 15
-    expect(item.status_log.count).to eq 6
-    expect(item.summary['DEBUG']).to eq 15
+    run
 
     sample_out = <<STR
+Run - TestRun : Ingest run started.
+Run - TestRun : Running subtask (1/2): CollectFiles
 CollectFiles - TestRun : Processing subitem (1/1): items
 CollectFiles - items : Processing subitem (1/4): test_dir_item.rb
 CollectFiles - items : Processing subitem (2/4): test_file_item.rb
@@ -138,6 +134,7 @@ CollectFiles - items : Processing subitem (3/4): test_item.rb
 CollectFiles - items : Processing subitem (4/4): test_run.rb
 CollectFiles - items : 4 of 4 subitems passed
 CollectFiles - TestRun : 1 of 1 subitems passed
+Run - TestRun : Running subtask (2/2): ProcessFiles
 ProcessFiles - TestRun : Running subtask (1/2): ChecksumTester
 ProcessFiles/ChecksumTester - TestRun : Processing subitem (1/1): items
 ProcessFiles/ChecksumTester - items : Processing subitem (1/4): test_dir_item.rb
@@ -154,10 +151,22 @@ ProcessFiles/CamelizeName - Items : Processing subitem (3/4): test_item.rb
 ProcessFiles/CamelizeName - Items : Processing subitem (4/4): test_run.rb
 ProcessFiles/CamelizeName - Items : 4 of 4 subitems passed
 ProcessFiles/CamelizeName - TestRun : 1 of 1 subitems passed
- INFO -- Analyzer - TestRun : Ingest finished
+ProcessFiles - TestRun : Done
+Run - TestRun : Done
 STR
+
     sample_out = sample_out.lines.to_a
     output = logoutput.string.lines
+
+    puts output
+
+    expect(run.summary['DEBUG']).to eq 21
+    expect(run.log_history.count).to eq 13
+    expect(run.status_log.count).to eq 10
+    item = run.items.first
+    expect(item.log_history.count).to eq 15
+    expect(item.status_log.count).to eq 6
+    expect(item.summary['DEBUG']).to eq 15
 
     expect(output.count).to eq sample_out.count
     output.each_with_index do |o, i|
@@ -174,7 +183,7 @@ STR
     expect(wf.description).to eq 'Workflow for testing'
     expect(wf.input.count).to eq 2
     expect(wf.input[:dirname][:default]).to eq '.'
-    expect(wf.config['tasks'].count).to eq 3
+    expect(wf.config['tasks'].count).to eq 2
     expect(wf.config['tasks'][0]['class']).to eq 'CollectFiles'
     expect(wf.config['tasks'][0]['recursive']).to eq true
     expect(wf.config['tasks'][1]['name']).to eq 'ProcessFiles'
@@ -184,7 +193,6 @@ STR
     expect(wf.config['tasks'][1]['tasks'][0]['recursive']).to eq true
     expect(wf.config['tasks'][1]['tasks'][1]['class']).to eq 'CamelizeName'
     expect(wf.config['tasks'][1]['tasks'][1]['recursive']).to eq true
-    expect(wf.config['tasks'][2]['class']).to eq '::Libis::Workflow::Tasks::Analyzer'
   end
 
   # noinspection RubyResolve
