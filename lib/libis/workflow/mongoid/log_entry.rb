@@ -8,7 +8,8 @@ module Libis
     module Mongoid
 
       class LogEntry
-        include Libis::Workflow::Mongoid::Base
+        include ::Mongoid::Document
+        include ::Mongoid::Timestamps::Created::Short
 
         store_in collection: 'log'
 
@@ -19,6 +20,7 @@ module Libis
         field :status, type: String
         field :run_id
 
+        index({c_at: 1}, {name: 'by_created'})
         index({logger_type: 1, logger_id: 1, c_at: 1, }, {background: true, name: 'by_logger'})
         index({logger_type: 1, logger_id: 1, c_at: 1, task: 1}, {background: true, name: 'by_task'})
         index({logger_type: 1, logger_id: 1, c_at: 1, status: 1}, {background: true, sparse: true, name: 'by_status'})
