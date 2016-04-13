@@ -12,7 +12,7 @@ module Libis
 
         field :start_date, type: Time, default: -> { Time.now }
         field :log_to_file, type: Boolean, default: false
-        field :log_level, type: String, default: 'DEBUG'
+        field :log_level, type: String, default: 'INFO'
         field :log_filename, type: String
 
         index({start_date: 1}, {sparse: 1, name: 'by_start'})
