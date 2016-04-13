@@ -158,7 +158,7 @@ STR
     sample_out = sample_out.lines.to_a
     output = logoutput.string.lines
 
-    puts output
+    # puts output
 
     expect(run.summary['DEBUG']).to eq 21
     expect(run.log_history.count).to eq 13
