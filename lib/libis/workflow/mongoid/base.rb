@@ -18,10 +18,10 @@ module Libis
 
             include ::Mongoid::Document
             include ::Mongoid::Timestamps::Created::Short
-            include ::Libis::Workflow::Mongoid::Sequence
-
-            field :_id, type: Integer, overwrite: true
-            sequence :_id
+            # include ::Libis::Workflow::Mongoid::Sequence
+            #
+            # field :_id, type: Integer, overwrite: true
+            # sequence :_id
             index({c_at: 1}, {name: 'by_created'})
 
           end

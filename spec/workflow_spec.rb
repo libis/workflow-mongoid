@@ -160,13 +160,9 @@ STR
 
     # puts output
 
-    expect(run.summary['DEBUG']).to eq 21
-    expect(run.log_history.count).to eq 13
-    expect(run.status_log.count).to eq 10
+    expect(run.status_log.count).to eq 5
     item = run.items.first
-    expect(item.log_history.count).to eq 15
-    expect(item.status_log.count).to eq 6
-    expect(item.summary['DEBUG']).to eq 15
+    expect(item.status_log.count).to eq 3
 
     expect(output.count).to eq sample_out.count
     output.each_with_index do |o, i|
@@ -212,7 +208,6 @@ STR
     expect(item.nil?).to eq false
     expect(item.is_a? TestDirItem).to eq true
     expect(item.properties['name']).to eq 'Items'
-    expect(item.properties['ingest_failed']).to eq false
   end
 
   it 'move item in relation' do

@@ -17,28 +17,7 @@ module Libis
 
         index({_id: 1, _type: 1}, {unique: true, name: 'by_id'})
 
-        has_many :logs, as: :logger, class_name: Libis::Workflow::Mongoid::LogEntry.to_s,
-                 dependent: :destroy, autosave: true do
-          def log_history
-            where(:status.exists => false).order(c_at: 1)
-          end
-
-          def status_log(task = nil)
-            if task
-              where(:status.exists => true, task: task)
-            else
-              where(:status.exists => true)
-            end.order(c_at: 1)
-          end
-
-          def get_status(task = nil)
-            if task
-              where(:status.exists => true, task: task)
-            else
-              where(:status.exists => true)
-            end.order(c_at: -1).limit(1).first
-          end
-        end
+        embeds_many :status_log, as: :item, class_name: Libis::Workflow::Mongoid::StatusEntry.to_s
 
         has_many :items, as: :parent, class_name: Libis::Workflow::Mongoid::WorkItem.to_s,
                  dependent: :destroy, autosave: true, order: :c_at.asc
@@ -46,21 +25,6 @@ module Libis
         belongs_to :parent, polymorphic: true
 
         index({parent_id: 1, parent_type: 1, c_at: 1}, {name: 'by_parent'})
-
-        set_callback(:destroy, :before) do |document|
-          # noinspection RubyResolve
-          document.logs.each { |log| log.destroy! }
-        end
-
-        def log_history
-          # noinspection RubyResolve
-          self.logs.log_history.all || []
-        end
-
-        def status_log
-          # noinspection RubyResolve
-          self.logs.status_log.all || []
-        end
 
         def add_item(item)
           if item.parent
@@ -73,6 +37,13 @@ module Libis
           self.items.to_a
         end
 
+        def status_progress(task, progress = 0, max = nil)
+          log_entry = status_entry(task)
+          log_entry ||= self.status_log.build(task: task)
+          log_entry[:progress] = progress
+          log_entry[:max] = max if max
+        end
+
         protected
 
         # Get last known status entry for a given task
@@ -81,17 +52,13 @@ module Libis
         # @param [String] task task name to check item status for
         # @return [Hash] the status entry
         def status_entry(task = nil)
-          self.logs.get_status(task)
-        end
-
-        def add_log_entry(msg)
-          # noinspection RubyResolve
-          self.logs.build(msg)
+          task.nil? ?
+            self.status_log.order_by(u_at: -1).first :
+            self.status_log.order_by(u_at: -1).where(task: task).first
         end
 
         def add_status_log(info)
-          # noinspection RubyResolve
-          self.logs.build(info)
+          self.status_log.build(info)
         end
 
       end
