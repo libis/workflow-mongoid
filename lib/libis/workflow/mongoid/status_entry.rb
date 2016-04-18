@@ -21,11 +21,6 @@ module Libis
         index({updated: 1}, {name: 'by_updated'})
 
         embedded_in :item, polymorphic: true
-
-        # noinspection RubyResolve
-        before_update do |doc|
-          doc.updated = DateTime.now
-        end
       end
 
     end
