@@ -9,17 +9,23 @@ module Libis
 
       class StatusEntry
         include ::Mongoid::Document
-        include ::Mongoid::Timestamps::Short
 
         field :task, type: String
+        field :created, type: DateTime, default: -> { DateTime.now }
+        field :updated, type: DateTime
         field :status, type: String, default: 'STARTED'
         field :progress, type: Integer
         field :max, type: Integer
 
-        index({c_at: 1}, {name: 'by_created'})
-        index({u_at: 1}, {name: 'by_updated'})
+        index({created: 1}, {name: 'by_created'})
+        index({updated: 1}, {name: 'by_updated'})
 
         embedded_in :item, polymorphic: true
+
+        # noinspection RubyResolve
+        before_update do |doc|
+          doc.updated = DateTime.now
+        end
       end
 
     end
