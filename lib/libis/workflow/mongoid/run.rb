@@ -32,6 +32,7 @@ module Libis
         def run(action = :run)
           self.tasks = []
           super action
+          close_logger
         end
 
         def logger
@@ -53,6 +54,13 @@ module Libis
           logger.additive = false
           logger.level = self.log_level
           logger
+        end
+
+        def close_logger
+          return unless self.log_to_file
+          ::Logging::Appenders[self.name].close
+          ::Logging::Appenders.remove(self.name)
+          ::Logging::Repository.instance.delete(self.name)
         end
 
       end
