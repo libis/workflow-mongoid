@@ -22,11 +22,25 @@ module Libis
         index({job_id: 1, job_type: 1, start_date: 1}, {sparse:1, name: 'by_job'})
 
         set_callback(:destroy, :before) do |document|
-          wd = document.work_dir
-          FileUtils.rmtree wd if wd && !wd.blank? && Dir.exist?(wd)
-          # noinspection RubyResolve
-          log_file = document.log_filename
+          document.rm_workdir
+          document.rm_log
+        end
+
+        def rm_log
+          log_file = self.log_filename
           FileUtils.rm(log_file) if log_file && !log_file.blank? && File.exist?(log_file)
+        end
+
+        def rm_workdir
+          workdir = self.work_dir
+          FileUtils.rmtree workdir if workdir && !workdir.blank? && Dir.exist?(workdir)
+        end
+
+        def work_dir
+          # noinspection RubyResolve
+          dir = File.join(Libis::Workflow::Config.workdir, self.id)
+          FileUtils.mkpath dir unless Dir.exist?(dir)
+          dir
         end
 
         def run(action = :run)
@@ -42,7 +56,7 @@ module Libis
           logger = ::Logging::Repository.instance[self.name]
           return logger if logger
           unless ::Logging::Appenders[self.name]
-            self.log_filename ||= File.join(::Libis::Workflow::Mongoid::Config[:log_dir], "#{self.name}.log")
+            self.log_filename ||= File.join(::Libis::Workflow::Mongoid::Config[:log_dir], "#{self.name}-#{self.id}.log")
             ::Logging::Appenders::File.new(
                 self.name,
                 filename: self.log_filename,
