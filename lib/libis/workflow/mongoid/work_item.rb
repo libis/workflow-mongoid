@@ -27,7 +27,8 @@ module Libis
 
         def add_item(item)
           if item.parent
-            item.parent = nil
+            item.parent.delete(item)
+            item.parent.save!
           end
           super
         end
