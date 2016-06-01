@@ -13,7 +13,6 @@ module Libis
 
         field :options, type: Hash, default: -> { Hash.new }
         field :properties, type: Hash, default: -> { Hash.new }
-        field :summary, type: Hash, default: -> { Hash.new }
         field :status_log, type: Array, default: -> { Array.new }
 
         index({_id: 1, _type: 1}, {unique: true, name: 'by_id'})
@@ -26,11 +25,20 @@ module Libis
         index({parent_id: 1, parent_type: 1, c_at: 1}, {name: 'by_parent'})
 
         def add_item(item)
+          raise Libis::WorkflowError, 'Trying to add item already linked to another item' unless item.parent.nil?
+          super(item)
+        end
+
+        def move_item(item)
+          new_item = item.dup
+          yield new_item, item if block_given?
+          new_item.parent = nil
+          item.items.each { |i| new_item.move_item(i) }
+          self.add_item(new_item)
           if item.parent
-            item.parent.delete(item)
-            item.parent.save!
+            item.parent.items.delete(item)
           end
-          super
+          new_item
         end
 
         def get_items

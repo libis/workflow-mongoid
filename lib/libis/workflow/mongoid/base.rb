@@ -52,11 +52,6 @@ module Libis
 
         end
 
-        def dup
-          new_obj = self.class.new
-          new_obj.copy_attributes(self)
-        end
-
         def to_hash
           result = self.attributes.reject { |k, v| v.blank? || volatile_attributes.include?(k) }
           result = result.to_yaml.gsub(/!ruby\/hash:BSON::Document/, '')

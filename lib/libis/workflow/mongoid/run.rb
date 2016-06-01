@@ -46,6 +46,8 @@ module Libis
         def run(action = :run)
           self.tasks = []
           super action
+          self.reload
+          self.reload_relations
           close_logger
         end
 

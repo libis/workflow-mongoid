@@ -213,7 +213,7 @@ STR
   it 'move item in relation' do
     item = run.items.first
     sub_item = item.items.first
-    run.add_item(sub_item)
+    run.move_item(sub_item)
     expect(run.size).to eq 2
     expect(item.size).to eq 3
   end
