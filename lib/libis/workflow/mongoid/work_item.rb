@@ -45,6 +45,10 @@ module Libis
           self.items.no_timeout
         end
 
+        def get_item_list
+          self.items.to_a
+        end
+
         protected
 
         def add_status_log(info)
