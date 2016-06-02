@@ -33,7 +33,7 @@ module Libis
           new_item = item.dup
           yield new_item, item if block_given?
           new_item.parent = nil
-          item.items.each { |i| new_item.move_item(i) }
+          item.get_items.each { |i| new_item.move_item(i) }
           self.add_item(new_item)
           if item.parent
             item.parent.items.delete(item)
@@ -42,7 +42,7 @@ module Libis
         end
 
         def get_items
-          self.items.to_a
+          self.items.no_timeout
         end
 
         protected
