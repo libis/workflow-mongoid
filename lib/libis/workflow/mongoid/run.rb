@@ -44,6 +44,7 @@ module Libis
         end
 
         def run(action = :run)
+          self.start_date = Time.now
           self.tasks = []
           super action
           self.reload
@@ -77,6 +78,10 @@ module Libis
           ::Logging::Appenders[self.name].close
           ::Logging::Appenders.remove(self.name)
           ::Logging::Repository.instance.delete(self.name)
+        end
+
+        def name
+          "#{self.job.name}-#{self.id.generation_time.strftime('%Y%m%d-%H%M%S')}-#{self.id.to_s[8..-1]}" rescue self.id.to_s
         end
 
       end
