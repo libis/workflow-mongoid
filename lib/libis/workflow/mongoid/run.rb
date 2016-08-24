@@ -20,7 +20,7 @@ module Libis
 
         belongs_to :job, polymorphic: true
 
-        index({job_id: 1, job_type: 1, start_date: 1}, {sparse:1, name: 'by_job'})
+        index({job_id: 1, job_type: 1, start_date: 1}, {sparse: 1, name: 'by_job'})
 
         set_callback(:destroy, :before) do |document|
           document.rm_workdir
@@ -82,11 +82,11 @@ module Libis
         end
 
         def name
-          [
-              (self.run_name || self.job.name),
-              self.id.generation_time.strftime('%Y%m%d-%H%M%S'),
-              self.id.to_s[8..-1]
-          ].reject { |x| x.blank? }.join('-')
+          parts = [self.job.name]
+          parts << self.run_name unless self.run_name.blank?
+          parts << self.id.generation_time.strftime('%Y%m%d-%H%M%S')
+          parts << self.id.to_s[8..-1] if self.run_name.blank?
+          parts.join('-')
         rescue
           self.id.to_s
         end
