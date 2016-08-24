@@ -14,6 +14,7 @@ module Libis
         field :log_to_file, type: Boolean, default: false
         field :log_level, type: String, default: 'INFO'
         field :log_filename, type: String
+        field :run_name, type: String
 
         index({start_date: 1}, {sparse: 1, name: 'by_start'})
 
@@ -81,7 +82,13 @@ module Libis
         end
 
         def name
-          "#{self.job.name}-#{self.id.generation_time.strftime('%Y%m%d-%H%M%S')}-#{self.id.to_s[8..-1]}" rescue self.id.to_s
+          [
+              (self.run_name || self.job.name),
+              self.id.generation_time.strftime('%Y%m%d-%H%M%S'),
+              self.id.to_s[8..-1]
+          ].reject { |x| x.blank? }.join('-')
+        rescue
+          self.id.to_s
         end
 
       end

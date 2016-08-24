@@ -58,11 +58,13 @@ module Libis
 
         # noinspection RubyStringKeysInHashInspection
         def execute(opts = {})
+          opts['run_config'] ||= {}
           if self.log_each_run
-            opts['run_config'] = {
-                'log_to_file' => true,
-                'log_level' => self.log_level
-            }
+            opts['run_config']['log_to_file'] = true
+            opts['run_config']['log_level'] = self.log_level
+          end
+          if (run_name = opts.delete('run_name'))
+            opts['run_config']['run_name'] = run_name
           end
           super opts
         end
