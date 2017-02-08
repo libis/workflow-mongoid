@@ -29,6 +29,15 @@ module Libis
           super(item)
         end
 
+        def copy_item(item)
+          new_item = item.dup
+          yield new_item, item if block_given?
+          new_item.parent = nil
+          item.get_items.each { |i| new_item.copy_item(i) }
+          self.add_item(new_item)
+          new_item
+        end
+
         def move_item(item)
           new_item = item.dup
           yield new_item, item if block_given?
