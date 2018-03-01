@@ -4,24 +4,24 @@ bundler_args: --without development
 cache: bundler
 
 rvm:
-  - 2.3.6
-  - 2.4.6
+  - 2.3.0
+  - 2.4.0
   - 2.5.0
   - ruby-head
-  - jruby-9.0.1.0
+  - jruby-9.1.0.0
 jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
 matrix:
   exclude:
-    - rvm: 2.3.6
+    - rvm: 2.3.0
       jdk: oraclejdk7
-    - rvm: 2.3.6
+    - rvm: 2.3.0
       jdk: oraclejdk8
-    - rvm: 2.4.3
+    - rvm: 2.4.0
       jdk: oraclejdk7
-    - rvm: 2.4.3
+    - rvm: 2.4.0
       jdk: oraclejdk8
     - rvm: 2.5.0
       jdk: oraclejdk7
