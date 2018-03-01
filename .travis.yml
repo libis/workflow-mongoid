@@ -9,30 +9,32 @@ rvm:
   - 2.5.0
   - ruby-head
   - jruby-9.1.0.0
+  - jruby-head
 jdk:
-  - openjdk7
-  - oraclejdk7
+  - openjdk8
   - oraclejdk8
+  - oraclejdk9
 matrix:
   exclude:
     - rvm: 2.3.0
-      jdk: oraclejdk7
+      jdk: oraclejdk8
     - rvm: 2.3.0
-      jdk: oraclejdk8
-    - rvm: 2.4.0
-      jdk: oraclejdk7
+      jdk: oraclejdk9
     - rvm: 2.4.0
       jdk: oraclejdk8
-    - rvm: 2.5.0
-      jdk: oraclejdk7
+    - rvm: 2.4.0
+      jdk: oraclejdk9
     - rvm: 2.5.0
       jdk: oraclejdk8
-    - rvm: ruby-head
-      jdk: oraclejdk7
+    - rvm: 2.5.0
+      jdk: oraclejdk9
     - rvm: ruby-head
       jdk: oraclejdk8
+    - rvm: ruby-head
+      jdk: oraclejdk9
   allow_failures:
     - rvm: ruby-head
+    - rvm: jruby-head
 branches:
   only:
       - master
