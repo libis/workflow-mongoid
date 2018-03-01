@@ -5,10 +5,10 @@ cache: bundler
 
 rvm:
   - 2.3.0
-  - 2.4.0
+  - 2.4.1
   - 2.5.0
   - ruby-head
-  - jruby-9.1.0.0
+  - jruby-9.1.9.0
   - jruby-head
 jdk:
   - openjdk8
@@ -20,9 +20,9 @@ matrix:
       jdk: oraclejdk8
     - rvm: 2.3.0
       jdk: oraclejdk9
-    - rvm: 2.4.0
+    - rvm: 2.4.1
       jdk: oraclejdk8
-    - rvm: 2.4.0
+    - rvm: 2.4.1
       jdk: oraclejdk9
     - rvm: 2.5.0
       jdk: oraclejdk8
