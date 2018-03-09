@@ -4,30 +4,37 @@ bundler_args: --without development
 cache: bundler
 
 rvm:
-  - 2.1.7
-  - 2.2.3
+  - 2.3.0
+  - 2.4.1
+  - 2.5.0
   - ruby-head
-  - jruby-9.0.1.0
+  - jruby-9.1.9.0
+  - jruby-head
 jdk:
-  - openjdk7
-  - oraclejdk7
+  - openjdk8
   - oraclejdk8
+  - oraclejdk9
 matrix:
   exclude:
-    - rvm: 2.1.7
-      jdk: oraclejdk7
-    - rvm: 2.1.7
+    - rvm: 2.3.0
       jdk: oraclejdk8
-    - rvm: 2.2.3
-      jdk: oraclejdk7
-    - rvm: 2.2.3
+    - rvm: 2.3.0
+      jdk: oraclejdk9
+    - rvm: 2.4.1
+      jdk: oraclejdk8
+    - rvm: 2.4.1
+      jdk: oraclejdk9
+    - rvm: 2.5.0
+      jdk: oraclejdk8
+    - rvm: 2.5.0
+      jdk: oraclejdk9
+    - rvm: ruby-head
       jdk: oraclejdk8
     - rvm: ruby-head
-      jdk: oraclejdk7
-    - rvm: ruby-head
-      jdk: oraclejdk8
+      jdk: oraclejdk9
   allow_failures:
     - rvm: ruby-head
+    - rvm: jruby-head
 branches:
   only:
       - master
