@@ -22,11 +22,16 @@ module Libis
         field :log_age, type: String, default: 'daily'
         field :log_keep, type: Integer, default: 5
 
+        # noinspection RubyArgCount
         index({name: 1}, {unique: 1, name: 'by_name'})
 
+        # noinspection RailsParamDefResolve
         has_many :runs, as: :job, dependent: :destroy, autosave: true, order: :c_at.asc
+
+        # noinspection RailsParamDefResolve
         belongs_to :workflow, polymorphic: true
 
+        # noinspection RubyArgCount
         index({workflow_id: 1, workflow_type: 1, name: 1}, {name: 'by_workflow'})
 
         def self.from_hash(hash)

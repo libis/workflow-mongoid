@@ -1,3 +1,4 @@
+# noinspection RubyResolve
 require 'fileutils'
 
 require 'libis/workflow/base/run'

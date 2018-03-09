@@ -18,8 +18,10 @@ module Libis
         field :description, type: String
         field :config, type: Hash, default: -> { Hash.new }
 
+        # noinspection RubyArgCount
         index({name: 1}, {unique: 1, name: 'by_name'})
 
+        # noinspection RailsParamDefResolve
         has_many :jobs, as: :workflow, dependent: :restrict, autosave: true, order: :name.asc
 
         def self.from_hash(hash)

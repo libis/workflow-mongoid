@@ -1,10 +1,11 @@
-# encoding: utf-8
+require 'date'
 
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'libis/workflow/mongoid/version'
 
+# noinspection RubyResolve
 Gem::Specification.new do |spec|
   spec.name = 'libis-workflow-mongoid'
   spec.version = ::Libis::Workflow::Mongoid::VERSION
@@ -18,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/libis/workflow-mongoid'
   spec.license = 'MIT'
 
+  # noinspection RubyResolve
   spec.platform = Gem::Platform::JAVA if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby'
 
   spec.files = `git ls-files -z`.split("\0")

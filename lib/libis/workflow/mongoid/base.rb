@@ -1,5 +1,6 @@
 require 'mongoid'
 require 'mongoid/document'
+# noinspection RubyResolve
 require 'yaml'
 require 'libis/tools/extend/hash'
 

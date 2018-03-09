@@ -39,6 +39,7 @@ describe 'TestWorkflow' do
 
   let(:workflow) {
     wf = TestWorkflow.find_or_initialize_by(name: 'TestWorkflow')
+    # noinspection RubyStringKeysInHashInspection
     wf.configure(
         'name' => 'TestWorkflow',
         'description' => 'Workflow for testing',
@@ -62,6 +63,7 @@ describe 'TestWorkflow' do
     wf
   }
   let(:job) {
+    # noinspection RubyStringKeysInHashInspection
     job = TestJob.from_hash(
         'name' => 'TestJob',
         'description' => 'Job for testing',

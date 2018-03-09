@@ -17,7 +17,9 @@ module Libis
         field :progress, type: Integer
         field :max, type: Integer
 
+        # noinspection RubyArgCount
         index({created: 1}, {name: 'by_created'})
+        # noinspection RubyArgCount
         index({updated: 1}, {name: 'by_updated'})
 
         embedded_in :item, polymorphic: true
