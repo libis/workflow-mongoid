@@ -22,7 +22,7 @@ module Libis
         index({name: 1}, {unique: 1, name: 'by_name'})
 
         # noinspection RailsParamDefResolve
-        has_many :jobs, as: :workflow, dependent: :restrict, autosave: true, order: :name.asc
+        has_many :jobs, as: :workflow, dependent: :restrict_with_exception, autosave: true, order: :name.asc
 
         def self.from_hash(hash)
           self.create_from_hash(hash, [:name]) do |item, cfg|

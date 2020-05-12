@@ -21,7 +21,7 @@ module Libis
         has_many :items, as: :parent, class_name: Libis::Workflow::Mongoid::WorkItem.to_s,
                  dependent: :destroy, autosave: true, order: :c_at.asc
 
-        belongs_to :parent, polymorphic: true
+        belongs_to :parent, polymorphic: true, optional: true
 
         # noinspection RubyArgCount
         index({parent_id: 1, parent_type: 1, c_at: 1}, {name: 'by_parent'})
