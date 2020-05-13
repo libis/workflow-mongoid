@@ -12,7 +12,6 @@ module Libis
       autoload :Job, 'libis/workflow/mongoid/job'
       autoload :WorkItem, 'libis/workflow/mongoid/work_item'
       autoload :Run, 'libis/workflow/mongoid/run'
-      autoload :Worker, 'libis/workflow/mongoid/worker'
       autoload :Workflow, 'libis/workflow/mongoid/workflow'
 
       def self.configure
