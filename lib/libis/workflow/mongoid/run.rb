@@ -23,9 +23,6 @@ module Libis
 
         index({job_id: 1, job_type: 1, start_date: 1}, {sparse: 1, name: 'by_job'})
 
-        has_many :items, as: :parent, class_name: Libis::Workflow::Mongoid::WorkItem.to_s,
-                 dependent: :destroy, autosave: true, order: :c_at.asc
-
         set_callback(:destroy, :before) do |document|
           document.rm_workdir
           document.rm_log
